@@ -100,30 +100,27 @@
         </div>
         <div class="row g-4">
             <div class="col-md-6" data-aos="fade-right">
-                <div class="card-wedding d-flex flex-column flex-sm-row align-items-center align-items-sm-start text-center text-sm-start">
-                    <div class="icon-container mb-3 mb-sm-0"><img src="icono_iglesia.png" alt="Iglesia" class="wedding-icon"></div>
-                    <div class="event-details w-100">
+                <div class="card-wedding d-flex align-items-center">
+                    <div class="icon-container"><img src="icono_iglesia.png" alt="Iglesia" class="wedding-icon"></div>
+                    <div class="event-details">
                         <h3 class="mb-2 h4">Ceremonia Religiosa</h3>
                         <p class="text-muted small mb-3"><strong>16:30 HRS</strong><br>Parroquia San Francisco de Sales<br>Sta. María 5600, Vitacura</p>
-                        
                         <div class="d-flex gap-2">
-                            <a href="#" id="btn-waze-iglesia" target="_blank" class="btn-gold flex-grow-1" style="font-size: 0.6rem;">Ir con Waze</a>
-                            <a href="#" id="btn-maps-iglesia" target="_blank" class="btn-gold btn-outline flex-grow-1" style="font-size: 0.6rem;">Ir con Maps</a>
+                            <a href="#" id="waze-iglesia" target="_blank" class="btn-gold flex-grow-1">Waze</a>
+                            <a href="#" id="maps-iglesia" target="_blank" class="btn-gold btn-outline flex-grow-1">Maps</a>
                         </div>
                     </div>
                 </div>
             </div>
-            
             <div class="col-md-6" data-aos="fade-left">
-                <div class="card-wedding d-flex flex-column flex-sm-row align-items-center align-items-sm-start text-center text-sm-start">
-                    <div class="icon-container mb-3 mb-sm-0"><img src="icono_evento.png" alt="Celebración" class="wedding-icon"></div>
-                    <div class="event-details w-100">
+                <div class="card-wedding d-flex align-items-center">
+                    <div class="icon-container"><img src="icono_evento.png" alt="Celebración" class="wedding-icon"></div>
+                    <div class="event-details">
                         <h3 class="mb-2 h4">Celebración</h3>
                         <p class="text-muted small mb-3"><strong>18:30 HRS</strong><br>Centro de Eventos ENTREMUROS<br>Camino el Guanaco 4819, Huechuraba</p>
-                        
                         <div class="d-flex gap-2">
-                            <a href="#" id="btn-waze-entremuros" target="_blank" class="btn-gold flex-grow-1" style="font-size: 0.6rem;">Ir con Waze</a>
-                            <a href="#" id="btn-maps-entremuros" target="_blank" class="btn-gold btn-outline flex-grow-1" style="font-size: 0.6rem;">Ir con Maps</a>
+                            <a href="#" id="waze-entremuros" target="_blank" class="btn-gold flex-grow-1">Waze</a>
+                            <a href="#" id="maps-entremuros" target="_blank" class="btn-gold btn-outline flex-grow-1">Maps</a>
                         </div>
                     </div>
                 </div>
@@ -190,11 +187,11 @@
 
         // --- CARGA DINÁMICA DE VARIABLES (TXT) ---
         const archivosVariables = [
-            { id: 'btn-waze-iglesia', archivo: 'waze_iglesia.txt', tipo: 'link' },
-            { id: 'btn-maps-iglesia', archivo: 'maps_iglesia.txt', tipo: 'link' },
-            { id: 'btn-waze-entremuros', archivo: 'waze_entremuros.txt', tipo: 'link' },
-            { id: 'btn-maps-entremuros', archivo: 'maps_entremuros.txt', tipo: 'link' },
-            { id: 'datos-transferencia', archivo: 'datos_transferencia.txt', tipo: 'texto' }
+            { id: 'waze-iglesia', archivo: 'waze_iglesia.txt', esLink: true },
+            { id: 'maps-iglesia', archivo: 'maps_iglesia.txt', esLink: true },
+            { id: 'waze-entremuros', archivo: 'waze_entremuros.txt', esLink: true },
+            { id: 'maps-entremuros', archivo: 'maps_entremuros.txt', esLink: true },
+            { id: 'datos-transferencia', archivo: 'datos_transferencia.txt', esLink: false }
         ];
 
         archivosVariables.forEach(item => {
@@ -205,11 +202,10 @@
                 })
                 .then(texto => {
                     const elemento = document.getElementById(item.id);
-                    if (item.tipo === 'link') {
+                    if (item.esLink) {
                         elemento.href = texto.trim();
-                    } else if (item.tipo === 'iframe') {
-                        elemento.src = texto.trim();
                     } else {
+                        // El estilo white-space: pre-line en el div respeta los saltos de línea automáticos
                         elemento.textContent = texto.trim();
                     }
                 })
