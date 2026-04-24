@@ -107,7 +107,7 @@
                         <p class="text-muted small mb-3"><strong>16:30 HRS</strong><br>Parroquia San Francisco de Sales<br>Sta. María 5600, Vitacura</p>
                         
                         <div class="ratio ratio-16x9 mb-3">
-                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3431.3358367492583!2d-70.59380092406734!3d-33.38248669403522!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9662c8c57a204f11%3A0x243d89f51caeb87b!2sParroquia%20San%20Francisco%20de%20Sales!5e1!3m2!1ses-419!2scl!4v1777068242757!5m2!1ses-419!2scl" width="600" height="450" style="border:0; border-radius: 4px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                            <iframe src="https://maps.google.com/maps?q=Parroquia%20San%20Francisco%20de%20Sales,%20Vitacura&t=&z=15&ie=UTF8&iwloc=&output=embed" style="border:0; border-radius: 4px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                         </div>
                         
                         <div class="d-flex gap-2">
@@ -119,4 +119,285 @@
             </div>
             
             <div class="col-md-6" data-aos="fade-left">
-                <div class="card-wedding d-flex flex-
+                <div class="card-wedding d-flex flex-column flex-sm-row align-items-center align-items-sm-start text-center text-sm-start">
+                    <div class="icon-container mb-3 mb-sm-0"><img src="icono_evento.png" alt="Celebración" class="wedding-icon"></div>
+                    <div class="event-details w-100">
+                        <h3 class="mb-2 h4">Celebración</h3>
+                        <p class="text-muted small mb-3"><strong>18:30 HRS</strong><br>Centro de Eventos ENTREMUROS<br>Camino el Guanaco 4819, Huechuraba</p>
+                        
+                        <div class="ratio ratio-16x9 mb-3">
+                            <iframe src="https://maps.google.com/maps?q=Centro%20de%20Eventos%20ENTREMUROS,%20Huechuraba&t=&z=15&ie=UTF8&iwloc=&output=embed" style="border:0; border-radius: 4px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <a href="#" id="btn-waze-entremuros" target="_blank" class="btn-gold flex-grow-1" style="font-size: 0.6rem;">Ir con Waze</a>
+                            <a href="#" id="btn-maps-entremuros" target="_blank" class="btn-gold btn-outline flex-grow-1" style="font-size: 0.6rem;">Ir con Maps</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5 bg-white" id="regalos">
+        <div class="container text-center" data-aos="fade-up">
+            <h2 class="serif mb-4">Regalos</h2>
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-5">
+                    <div class="p-4 border text-start">
+                        <h5 class="serif">Transferencia - Luna de miel & primer hogar</h5>
+                        <p class="small mb-1" id="datos-transferencia" style="white-space: pre-line;">Cargando datos bancarios...</p>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="p-4 border">
+                        <h5 class="serif">Novios Falabella - Código 2104486</h5>
+                        <a href="https://novios.falabella.com/info-evento/evento?codigoEvento=2104486" target="_blank" class="btn-gold mt-2">Ver Lista</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container py-5 text-center" id="rsvp">
+        <h2 class="serif h1 mb-4" data-aos="fade-up">Confirmar Asistencia</h2>
+        <p class="text-muted mb-5">Selecciona cómo deseas confirmar tu asistencia.</p>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6 text-start" data-aos="fade-up">
+                <div id="seleccion-modo" class="d-flex flex-column flex-md-row justify-content-center gap-3 mb-4">
+                    <button id="btn-solo" class="btn-gold flex-grow-1">Confirmar solo por mí</button>
+                    <button id="btn-grupo" class="btn-gold btn-outline flex-grow-1">Confirmar grupo familiar</button>
+                </div>
+
+                <div id="contenedor-formulario" style="display: none;">
+                    <form id="rsvpForm" class="p-4 border bg-white shadow-sm">
+                        <div id="lista-invitados-dinamica"></div>
+                        <button type="button" id="btn-agregar-familiar" class="btn-gold btn-outline w-100 mb-4 mt-2" style="display: none;">
+                            <i class="bi bi-plus me-1"></i> Ingresa el próximo miembro familiar
+                        </button>
+                        <button type="submit" id="btn-enviar-rsvp" class="btn-gold w-100 mt-2 border-0">Enviar Confirmación</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <datalist id="listaInvitadosBD"></datalist>
+    </section>
+
+    <footer class="py-5 text-center text-muted small">
+        <p class="serif fs-4 mb-1" style="color:var(--oro)">A & F</p>
+        <p>Hecho con ❤️ para nuestro matri</p>
+    </footer>
+
+    <a href="https://wa.me/56958194677" class="wa-float" target="_blank"><i class="bi bi-whatsapp"></i></a>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 1000, once: true });
+
+        // --- CARGA DINÁMICA DE VARIABLES (TXT) ---
+        const archivosVariables = [
+            { id: 'btn-waze-iglesia', archivo: 'waze_iglesia.txt', tipo: 'link' },
+            { id: 'btn-maps-iglesia', archivo: 'maps_iglesia.txt', tipo: 'link' },
+            { id: 'btn-waze-entremuros', archivo: 'waze_entremuros.txt', tipo: 'link' },
+            { id: 'btn-maps-entremuros', archivo: 'maps_entremuros.txt', tipo: 'link' },
+            { id: 'datos-transferencia', archivo: 'datos_transferencia.txt', tipo: 'texto' }
+        ];
+
+        archivosVariables.forEach(item => {
+            fetch(item.archivo)
+                .then(res => {
+                    if (!res.ok) throw new Error(`Archivo no encontrado: ${item.archivo}`);
+                    return res.text();
+                })
+                .then(texto => {
+                    const elemento = document.getElementById(item.id);
+                    if (item.tipo === 'link') {
+                        elemento.href = texto.trim();
+                    } else {
+                        elemento.textContent = texto.trim();
+                    }
+                })
+                .catch(err => console.warn("Aviso:", err));
+        });
+
+        // URL DE TU WORKER DE CLOUDFLARE
+        const SCRIPT_URL = "https://rsvp-api.felipegiacoman.workers.dev";
+
+        // --- BLOQUE DE PRECARGA DE NOMBRES ---
+        fetch(SCRIPT_URL)
+            .then(res => res.json())
+            .then(data => {
+                const datalist = document.getElementById('listaInvitadosBD');
+                data.forEach(item => {
+                    if(item.nombre_invitado) {
+                        let opt = document.createElement('option');
+                        opt.value = item.nombre_invitado;
+                        datalist.appendChild(opt);
+                    }
+                });
+            })
+            .catch(err => console.error("Error cargando nombres:", err));
+
+        // --- FUNCIONES DE VALIDACIÓN RUT ---
+        function limpiarRut(rut) {
+            return rut.replace(/[^0-9kK]/g, '').toUpperCase();
+        }
+
+        function validarRutAlgoritmo(rutLimpio) {
+            if (rutLimpio.length < 8) return false;
+            let cuerpo = rutLimpio.slice(0, -1);
+            let dv = rutLimpio.slice(-1);
+            let suma = 0;
+            let multiplo = 2;
+            for (let i = cuerpo.length - 1; i >= 0; i--) {
+                suma += parseInt(cuerpo.charAt(i)) * multiplo;
+                multiplo = multiplo < 7 ? multiplo + 1 : 2;
+            }
+            let dvEsperado = 11 - (suma % 11);
+            if (dvEsperado === 11) dvEsperado = "0";
+            else if (dvEsperado === 10) dvEsperado = "K";
+            else dvEsperado = dvEsperado.toString();
+
+            return dv === dvEsperado;
+        }
+
+        function darFormatoRut(rutLimpio) {
+            if (rutLimpio.length <= 1) return rutLimpio;
+            let cuerpo = rutLimpio.slice(0, -1);
+            let dv = rutLimpio.slice(-1);
+            cuerpo = cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            return `${cuerpo}-${dv}`;
+        }
+
+        // 1. Lógica Dinámica del Formulario
+        let contadorInvitados = 0;
+        const btnSolo = document.getElementById('btn-solo');
+        const btnGrupo = document.getElementById('btn-grupo');
+        const contenedorFormulario = document.getElementById('contenedor-formulario');
+        const listaDinamica = document.getElementById('lista-invitados-dinamica');
+        const btnAgregarFamiliar = document.getElementById('btn-agregar-familiar');
+
+        function crearBloqueInvitado(id) {
+            return `
+            <div class="bloque-invitado mb-4 pb-4 ${id > 1 ? 'border-top pt-4' : ''}" id="invitado-${id}">
+                ${id > 1 ? `<div class="d-flex justify-content-between mb-3"><h5 class="serif m-0" style="color:var(--oro);">Familiar #${id}</h5><button type="button" class="btn-close" onclick="document.getElementById('invitado-${id}').remove()"></button></div>` : ''}
+                <div class="mb-3">
+                    <label class="form-label small fw-bold" style="color:var(--oro);">NOMBRE COMPLETO</label>
+                    <input type="text" class="form-control bg-transparent nombre-buscar" list="listaInvitadosBD" name="nombre" required style="border:1px solid var(--oro);">
+                </div>
+                <div class="datos-extra" style="display:none;">
+                    <div class="row g-3">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label small fw-bold">RUT</label>
+                            <input type="text" class="form-control rut-input" name="rut" placeholder="Ej: 12.345.678-9" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label small fw-bold">TELÉFONO</label>
+                            <input type="tel" class="form-control tel-input" name="telefono" placeholder="Ej: 98765432 o +569..." required>
+                        </div>
+                    </div>
+                    <div class="mb-3"><label class="form-label small fw-bold">CORREO</label><input type="email" class="form-control" name="email" required></div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">RESTRICCIÓN ALIMENTARIA</label>
+                        <select class="form-select" name="dieta" required>
+                            <option value="Ninguna">Ninguna</option>
+                            <option value="Vegano">Vegano(a)</option>
+                            <option value="Vegetariano">Vegetariano(a)</option>
+                            <option value="Celiaco">Celiaco</option>
+                        </select>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input check-pareja" type="checkbox" id="cp-${id}">
+                        <label class="form-check-label small fw-bold" for="cp-${id}">MI INVITACIÓN INCLUYE PAREJA</label>
+                    </div>
+                    <div class="campo-pareja" style="display:none;"><input type="text" class="form-control input-pareja" name="nombre_pareja" placeholder="Nombre completo pareja"></div>
+                </div>
+            </div>`;
+        }
+
+        function agregarInvitado() {
+            contadorInvitados++;
+            listaDinamica.insertAdjacentHTML('beforeend', crearBloqueInvitado(contadorInvitados));
+            const bloque = document.getElementById(`invitado-${contadorInvitados}`);
+            
+            // Mostrar datos extras al ingresar nombre
+            bloque.querySelector('.nombre-buscar').addEventListener('input', function() {
+                bloque.querySelector('.datos-extra').style.display = this.value.length > 3 ? 'block' : 'none';
+            });
+            
+            // Lógica de pareja
+            bloque.querySelector('.check-pareja').addEventListener('change', function() {
+                bloque.querySelector('.campo-pareja').style.display = this.checked ? 'block' : 'none';
+            });
+
+            // Formateo visual del RUT al salir del campo
+            bloque.querySelector('.rut-input').addEventListener('blur', function() {
+                let rutLimpio = limpiarRut(this.value);
+                if (rutLimpio.length >= 2) {
+                    this.value = darFormatoRut(rutLimpio);
+                }
+            });
+
+            // AUTO-FORMATO Y VALIDACIÓN NATIVA DE TELÉFONO
+            const inputTel = bloque.querySelector('.tel-input');
+            
+            inputTel.addEventListener('blur', function() {
+                let telRaw = this.value.replace(/[\s\-\(\)]/g, ''); 
+                
+                // Reglas de autocompletado
+                if (/^\d{8}$/.test(telRaw)) {
+                    this.value = '+569' + telRaw;
+                } else if (/^9\d{8}$/.test(telRaw)) {
+                    this.value = '+56' + telRaw;
+                } else if (/^569\d{8}$/.test(telRaw)) {
+                    this.value = '+' + telRaw;
+                }
+
+                // Revisar si faltan números
+                let digitos = this.value.replace(/\D/g, '');
+                if (digitos.length > 0 && digitos.length < 8) {
+                    this.setCustomValidity("Número muy corto. Faltan dígitos.");
+                    this.reportValidity(); 
+                } else {
+                    this.setCustomValidity(""); 
+                }
+            });
+
+            inputTel.addEventListener('input', function() {
+                this.setCustomValidity(""); 
+            });
+        }
+
+        btnSolo.onclick = () => { listaDinamica.innerHTML = ''; contadorInvitados = 0; agregarInvitado(); contenedorFormulario.style.display = 'block'; btnAgregarFamiliar.style.display = 'none'; };
+        btnGrupo.onclick = () => { listaDinamica.innerHTML = ''; contadorInvitados = 0; agregarInvitado(); contenedorFormulario.style.display = 'block'; btnAgregarFamiliar.style.display = 'block'; };
+        btnAgregarFamiliar.onclick = agregarInvitado;
+
+        // 2. Envío a Cloudflare D1 con Validaciones
+        document.getElementById('rsvpForm').onsubmit = function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-enviar-rsvp');
+            btn.innerText = "ENVIANDO...";
+            btn.disabled = true;
+
+            const bloques = document.querySelectorAll('.bloque-invitado');
+            const listaParaEnviar = [];
+
+            for (let b of bloques) {
+                const nombre = b.querySelector('.nombre-buscar').value;
+                const rutRaw = b.querySelector('[name="rut"]').value;
+                const rutLimpio = limpiarRut(rutRaw);
+                
+                // Validar RUT 
+                if (!validarRutAlgoritmo(rutLimpio)) {
+                    alert(`El RUT ingresado para ${nombre} no es válido. Por favor, revisa el dígito verificador.`);
+                    btn.innerText = "Enviar Confirmación";
+                    btn.disabled = false;
+                    return; 
+                }
+
+                // Validar Teléfono 
+                const telInput = b.querySelector('.tel-input');
+                let telDigitos = telInput.value.replace(/\D/g, '');
+                if (tel
