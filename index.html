@@ -29,7 +29,8 @@
         .hero { height: 100vh; background: linear-gradient(rgba(242, 236, 228, 0.1), rgba(242, 236, 228, 0.4)), url('fondo.jpg'); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; text-align: center; }
         .hero-content { background: rgba(255, 255, 255, 0.75); padding: 4rem 2rem; backdrop-filter: blur(8px); max-width: 90%; border: 1px solid rgba(181, 154, 122, 0.2); }
         .hero-names { font-size: clamp(2.5rem, 8vw, 5.5rem); color: var(--oscuro); }
-        .hero-date { letter-spacing: 4px; border-top: 1px solid var(--oro); border-bottom: 1px solid var(--oro); padding: 12px 0; margin: 25px 0; display: inline-block; width: 100%; }
+        .hero-date { letter-spacing: 4px; border-top: 1px solid var(--oro); border-bottom: 1px solid var(--oro); padding: 12px 0; margin: 25px 0 10px 0; display: inline-block; width: 100%; }
+        .feriado-tag { color: var(--oro); font-size: 0.75rem; letter-spacing: 3px; font-weight: 600; text-transform: uppercase; margin-bottom: 20px; }
 
         /* SOBRE NOSOTROS */
         .img-nosotros { width: 100%; height: 350px; object-fit: cover; border-radius: 2px; filter: sepia(0.2); transition: 0.5s; }
@@ -42,7 +43,7 @@
         .wedding-icon { max-width: 100%; max-height: 100%; object-fit: contain; }
         .event-details { text-align: left; flex-grow: 1;}
 
-        /* BOTONES (Actualizados para mejor contraste) */
+        /* BOTONES */
         .btn-gold { background: var(--oro); color: var(--oscuro); font-weight: bold; border: none; padding: 10px 20px; text-transform: uppercase; letter-spacing: 1px; font-size: 0.65rem; text-decoration: none; display: inline-block; transition: 0.3s; text-align: center;}
         .btn-gold:hover { background: var(--oscuro); color: var(--oro); }
         .btn-outline { background: transparent; border: 1px solid var(--oro); color: var(--oro); }
@@ -76,13 +77,13 @@
             <p class="text-uppercase small mb-2" style="letter-spacing:4px;">Nos Casamos</p>
             <h1 class="hero-names">Antonia <span class="hero-amp">&</span> Felipe</h1>
             <div class="hero-date">DOMINGO 11 DE OCTUBRE, 2026</div>
+            <p class="feriado-tag">Lunes 12 es feriado</p>
             <p class="serif italic">Santiago, Chile</p>
         </div>
     </header>
 
     <section class="container py-4 text-center" data-aos="fade-up">
-        <div id="contador" class="d-flex justify-content-center gap-3 gap-md-5 serif fs-4" style="color: var(--oro);">
-            </div>
+        <div id="contador" class="d-flex justify-content-center gap-3 gap-md-5 serif fs-4" style="color: var(--oro);"></div>
     </section>
 
     <section class="container py-5 mt-3" id="nosotros">
@@ -121,7 +122,7 @@
                         <p class="text-muted small mb-3"><strong>16:30 HRS</strong><br>Parroquia San Francisco de Sales<br>Sta. María 5600, Vitacura</p>
                         <div class="d-flex gap-2">
                             <a href="https://ul.waze.com/ul?venue_id=189662650.1896692038.966394&overview=yes" target="_blank" class="btn-gold flex-grow-1">Waze</a>
-                            <a href="https://maps.google.com/?q=Sta.+María+5600,+Vitacura" target="_blank" class="btn-gold btn-outline flex-grow-1">Maps</a>
+                            <a href="https://maps.app.goo.gl/..." target="_blank" class="btn-gold btn-outline flex-grow-1">Maps</a>
                         </div>
                     </div>
                 </div>
@@ -136,7 +137,7 @@
                         <p class="text-muted small mb-3"><strong>18:30 HRS</strong><br>Centro de Eventos ENTREMUROS<br>Camino el Guanaco 4819, Huechuraba</p>
                         <div class="d-flex gap-2">
                             <a href="https://ul.waze.com/ul?venue_id=189597114.1896233287.2665894&overview=yes" target="_blank" class="btn-gold flex-grow-1">Waze</a>
-                            <a href="https://maps.google.com/?q=Camino+el+Guanaco+4819,+Huechuraba" target="_blank" class="btn-gold btn-outline flex-grow-1">Maps</a>
+                            <a href="https://maps.app.goo.gl/..." target="_blank" class="btn-gold btn-outline flex-grow-1">Maps</a>
                         </div>
                     </div>
                 </div>
@@ -188,7 +189,7 @@
             .then(data => { document.getElementById('historia-texto').innerText = data; })
             .catch(error => { document.getElementById('historia-texto').innerText = "Nuestra historia está siendo escrita..."; });
 
-        // Ocultar Navbar al hacer scroll hacia abajo
+        // Ocultar Navbar al hacer scroll
         let lastScroll = 0;
         window.addEventListener("scroll", () => {
             const currentScroll = window.pageYOffset;
@@ -198,25 +199,19 @@
             lastScroll = currentScroll;
         });
 
-        // Script del Contador Regresivo
+        // Contador
         const fechaBoda = new Date("Oct 11, 2026 16:30:00").getTime();
         const x = setInterval(function() {
             const ahora = new Date().getTime();
             const distancia = fechaBoda - ahora;
-
             const dias = Math.floor(distancia / (1000 * 60 * 60 * 24));
             const horas = Math.floor((distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
-
             document.getElementById("contador").innerHTML = 
-                `<div><span class="fs-1 fw-bold text-dark">${dias}</span><br><small class="sans-serif" style="font-size:0.7rem; letter-spacing:2px; color:var(--texto);">DÍAS</small></div>` +
-                `<div><span class="fs-1 fw-bold text-dark">${horas}</span><br><small class="sans-serif" style="font-size:0.7rem; letter-spacing:2px; color:var(--texto);">HRS</small></div>` +
-                `<div><span class="fs-1 fw-bold text-dark">${minutos}</span><br><small class="sans-serif" style="font-size:0.7rem; letter-spacing:2px; color:var(--texto);">MIN</small></div>`;
-
-            if (distancia < 0) {
-                clearInterval(x);
-                document.getElementById("contador").innerHTML = "¡HOY ES EL GRAN DÍA!";
-            }
+                `<div><span class="fs-1 fw-bold text-dark">${dias}</span><br><small style="font-size:0.7rem; letter-spacing:2px; color:var(--texto);">DÍAS</small></div>` +
+                `<div><span class="fs-1 fw-bold text-dark">${horas}</span><br><small style="font-size:0.7rem; letter-spacing:2px; color:var(--texto);">HRS</small></div>` +
+                `<div><span class="fs-1 fw-bold text-dark">${minutos}</span><br><small style="font-size:0.7rem; letter-spacing:2px; color:var(--texto);">MIN</small></div>`;
+            if (distancia < 0) { clearInterval(x); document.getElementById("contador").innerHTML = "¡HOY ES EL GRAN DÍA!"; }
         }, 1000);
     </script>
 </body>
