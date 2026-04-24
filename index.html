@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Antonia & Felipe</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <!-- AOS -->
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #f2ece4;
+      color: #2d2d2d;
+    }
+
+    h1, h2, h3 {
+      font-family: 'Playfair Display', serif;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      backdrop-filter: blur(10px);
+      background: rgba(255,255,255,0.6);
+      transition: top 0.3s;
+    }
+
+    .navbar-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+    }
+
+    .gold {
+      color: #b59a7a;
+    }
+
+    .btn-gold {
+      background-color: #b59a7a;
+      color: white;
+      border: none;
+    }
+
+    .btn-gold:hover {
+      background-color: #a68c6b;
+    }
+
+    /* HERO */
+    .hero {
+      height: 100vh;
+      background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('fondo.jpg') center/cover no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .hero-box {
+      background: rgba(255,255,255,0.85);
+      padding: 30px;
+      border: 1px solid #b59a7a;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+    }
+
+    /* SECTION TITLE */
+    .section-title {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .divider {
+      width: 60px;
+      height: 2px;
+      background: #b59a7a;
+      margin: 10px auto;
+    }
+
+    /* IMAGES */
+    .img-hover {
+      transition: transform 0.3s, filter 0.3s;
+    }
+
+    .img-hover:hover {
+      transform: scale(1.05);
+      filter: sepia(20%);
+    }
+
+    /* CARDS */
+    .card {
+      border: none;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
+
+    /* RESPONSIVE */
+    @media (min-width: 768px) {
+      .hero h1 {
+        font-size: 4rem;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="#">A <span class="gold">&</span> F</a>
+
+    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-end" id="nav">
+      <ul class="navbar-nav me-3">
+        <li class="nav-item"><a class="nav-link" href="#evento">Ceremonia & Recepción</a></li>
+        <li class="nav-item"><a class="nav-link" href="#regalos">Regalos</a></li>
+      </ul>
+      <a href="#" class="btn btn-gold">Confirmar Asistencia</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-box" data-aos="fade-up">
+    <p style="letter-spacing:2px;">NOS CASAMOS</p>
+    <h1>Antonia & Felipe</h1>
+    <p>DOMINGO 11 DE OCTUBRE, 2026</p>
+    <p><strong>Lunes 12 — Feriado</strong></p>
+    <p>Santiago, Chile</p>
+  </div>
+</section>
+
+<!-- SOBRE NOSOTROS -->
+<section class="py-5">
+  <div class="container">
+    <div class="section-title" data-aos="fade-up">
+      <h2>Sobre Nosotros</h2>
+      <div class="divider"></div>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-4" data-aos="fade-up">
+        <img src="nosotros1.jpg" class="img-fluid img-hover">
+      </div>
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+        <img src="nosotros2.jpg" class="img-fluid img-hover">
+      </div>
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+        <img src="nosotros3.jpg" class="img-fluid img-hover">
+      </div>
+    </div>
+
+    <div class="mt-4 text-center" data-aos="fade-up">
+      <p>
+        Nuestra historia empezó en 2019, a miles de kilómetros de casa. Aunque Felipe es de Santiago y la Anto de Viña, el destino quiso que nos conociéramos en un intercambio de la UAI en Canadá.<br><br>
+        Todo partió con un grito de la Anto: “¡Chile!”, cuando reconoció a un hombre caminando con una maleta, y llevando orgullosamente puesta la polera de la U de Chile. Lo que comenzó como un simple encuentro se transformó en un fin de semana de recorrer Quebec, y tiempo después en algo mucho más lindo. Desde ese momento, la historia se contó sola.<br><br>
+        Es loco pensar que, de no habernos cruzado en Canadá, probablemente nuestros caminos nunca se habrían unido. Por eso estamos convencidos de que nada fue casualidad: nos fuimos lejos para encontrarnos y hoy decidimos quedarnos juntos para siempre.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- EVENTO -->
+<section id="evento" class="py-5">
+  <div class="container">
+    <div class="section-title" data-aos="fade-up">
+      <h2>Ceremonia & Recepción</h2>
+      <div class="divider"></div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-6" data-aos="fade-up">
+        <div class="card p-4">
+          <h4>Ceremonia</h4>
+          <p>Hora: 17:00</p>
+          <p>Lugar: Iglesia por definir</p>
+        </div>
+      </div>
+
+      <div class="col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="card p-4">
+          <h4>Recepción</h4>
+          <p>Hora: 19:00</p>
+          <p>Lugar: Centro de eventos</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REGALOS -->
+<section id="regalos" class="py-5 text-center">
+  <div class="container" data-aos="fade-up">
+    <h2>Regalos</h2>
+    <div class="divider"></div>
+    <p>Tu presencia es nuestro mejor regalo, pero si deseas ayudarnos, pronto compartiremos más información aquí.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="text-center py-4">
+  <p>Antonia & Felipe · 2026</p>
+</footer>
+
+<!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.1/dist/aos.js"></script>
+
+<script>
+  // AOS INIT (IMPORTANTE)
+  window.addEventListener('load', function () {
+    AOS.init({
+      duration: 1000,
+      once: true,
+      offset: 50
+    });
+  });
+
+  // NAVBAR HIDE ON SCROLL
+  let prevScroll = window.pageYOffset;
+  const navbar = document.querySelector('.navbar');
+
+  window.addEventListener('scroll', () => {
+    let currentScroll = window.pageYOffset;
+
+    if (prevScroll > currentScroll) {
+      navbar.style.top = "0";
+    } else {
+      navbar.style.top = "-80px";
+    }
+
+    prevScroll = currentScroll;
+  });
+</script>
+
+</body>
+</html>
