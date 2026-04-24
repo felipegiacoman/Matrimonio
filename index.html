@@ -1,251 +1,184 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Antonia & Felipe</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antonia & Felipe — Nuestra Boda</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
-  <!-- Bootstrap -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root { --oro: #b59a7a; --crema: #f2ece4; --texto: #2d2d2d; --oscuro: #1a1a1a; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--crema); color: var(--texto); overflow-x: hidden; }
+        h1, h2, h3, .serif { font-family: 'Playfair Display', serif; }
 
-  <!-- Icons -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+        /* NAVBAR */
+        .navbar { background: rgba(242, 236, 228, 0.95); backdrop-filter: blur(10px); padding: 0.8rem 0; transition: 0.4s; z-index: 1050;}
+        .nav-link-custom { color: var(--texto); text-decoration: none; text-transform: uppercase; font-size: 0.65rem; letter-spacing: 1px; margin-right: 20px; font-weight: 500; transition: 0.3s; }
+        .nav-link-custom:hover { color: var(--oro); }
+        .nav-hidden { transform: translateY(-100%); }
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+        /* HERO */
+        .hero { height: 100vh; background: linear-gradient(rgba(242, 236, 228, 0.1), rgba(242, 236, 228, 0.4)), url('fondo.jpg'); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; text-align: center; }
+        .hero-content { background: rgba(255, 255, 255, 0.75); padding: 4rem 2rem; backdrop-filter: blur(8px); max-width: 90%; border: 1px solid rgba(181, 154, 122, 0.2); }
+        .hero-names { font-size: clamp(2.5rem, 8vw, 5.5rem); color: var(--oscuro); }
+        .hero-date { letter-spacing: 4px; border-top: 1px solid var(--oro); border-bottom: 1px solid var(--oro); padding: 12px 0; margin: 25px 0; display: inline-block; width: 100%; }
 
-  <!-- AOS -->
-  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.1/dist/aos.css" rel="stylesheet">
+        /* SOBRE NOSOTROS */
+        .img-nosotros { width: 100%; height: 350px; object-fit: cover; border-radius: 2px; filter: sepia(0.2); transition: 0.5s; }
+        .img-nosotros:hover { filter: sepia(0); transform: scale(1.02); }
+        #historia-texto { white-space: pre-line; line-height: 1.8; color: #555; }
 
-  <style>
-    body {
-      font-family: 'Montserrat', sans-serif;
-      background-color: #f2ece4;
-      color: #2d2d2d;
-    }
+        /* LOGÍSTICA CON ÍCONOS */
+        .card-wedding { background: white; padding: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.02); height: 100%; border-radius: 4px; transition: 0.3s; }
+        .icon-container { width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; margin-right: 1.5rem; flex-shrink: 0;}
+        .wedding-icon { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .event-details { text-align: left; flex-grow: 1;}
 
-    h1, h2, h3 {
-      font-family: 'Playfair Display', serif;
-    }
-
-    /* NAVBAR */
-    .navbar {
-      backdrop-filter: blur(10px);
-      background: rgba(255,255,255,0.6);
-      transition: top 0.3s;
-    }
-
-    .navbar-brand {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.5rem;
-    }
-
-    .gold {
-      color: #b59a7a;
-    }
-
-    .btn-gold {
-      background-color: #b59a7a;
-      color: white;
-      border: none;
-    }
-
-    .btn-gold:hover {
-      background-color: #a68c6b;
-    }
-
-    /* HERO */
-    .hero {
-      height: 100vh;
-      background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('fondo.jpg') center/cover no-repeat;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
-
-    .hero-box {
-      background: rgba(255,255,255,0.85);
-      padding: 30px;
-      border: 1px solid #b59a7a;
-    }
-
-    .hero h1 {
-      font-size: 3rem;
-    }
-
-    /* SECTION TITLE */
-    .section-title {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .divider {
-      width: 60px;
-      height: 2px;
-      background: #b59a7a;
-      margin: 10px auto;
-    }
-
-    /* IMAGES */
-    .img-hover {
-      transition: transform 0.3s, filter 0.3s;
-    }
-
-    .img-hover:hover {
-      transform: scale(1.05);
-      filter: sepia(20%);
-    }
-
-    /* CARDS */
-    .card {
-      border: none;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-    }
-
-    /* RESPONSIVE */
-    @media (min-width: 768px) {
-      .hero h1 {
-        font-size: 4rem;
-      }
-    }
-
-  </style>
+        /* BOTONES */
+        .btn-gold { background: var(--oro); color: white; border: none; padding: 10px 20px; text-transform: uppercase; letter-spacing: 1px; font-size: 0.65rem; text-decoration: none; display: inline-block; transition: 0.3s; text-align: center;}
+        .btn-gold:hover { background: var(--oscuro); color: white; }
+        .btn-outline { background: transparent; border: 1px solid var(--oro); color: var(--oro); }
+        .btn-outline:hover { background: var(--oro); color: white; }
+        
+        .wa-float { position: fixed; bottom: 30px; right: 30px; background: #25d366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; z-index: 1000; text-decoration: none; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+    </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg fixed-top">
-  <div class="container">
-    <a class="navbar-brand" href="#">A <span class="gold">&</span> F</a>
-
-    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse justify-content-end" id="nav">
-      <ul class="navbar-nav me-3">
-        <li class="nav-item"><a class="nav-link" href="#evento">Ceremonia & Recepción</a></li>
-        <li class="nav-item"><a class="nav-link" href="#regalos">Regalos</a></li>
-      </ul>
-      <a href="#" class="btn btn-gold">Confirmar Asistencia</a>
-    </div>
-  </div>
-</nav>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-box" data-aos="fade-up">
-    <p style="letter-spacing:2px;">NOS CASAMOS</p>
-    <h1>Antonia & Felipe</h1>
-    <p>DOMINGO 11 DE OCTUBRE, 2026</p>
-    <p><strong>Lunes 12 — Feriado</strong></p>
-    <p>Santiago, Chile</p>
-  </div>
-</section>
-
-<!-- SOBRE NOSOTROS -->
-<section class="py-5">
-  <div class="container">
-    <div class="section-title" data-aos="fade-up">
-      <h2>Sobre Nosotros</h2>
-      <div class="divider"></div>
-    </div>
-
-    <div class="row g-3">
-      <div class="col-md-4" data-aos="fade-up">
-        <img src="nosotros1.jpg" class="img-fluid img-hover">
-      </div>
-      <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
-        <img src="nosotros2.jpg" class="img-fluid img-hover">
-      </div>
-      <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
-        <img src="nosotros3.jpg" class="img-fluid img-hover">
-      </div>
-    </div>
-
-    <div class="mt-4 text-center" data-aos="fade-up">
-      <p>
-        Nuestra historia empezó en 2019, a miles de kilómetros de casa. Aunque Felipe es de Santiago y la Anto de Viña, el destino quiso que nos conociéramos en un intercambio de la UAI en Canadá.<br><br>
-        Todo partió con un grito de la Anto: “¡Chile!”, cuando reconoció a un hombre caminando con una maleta, y llevando orgullosamente puesta la polera de la U de Chile. Lo que comenzó como un simple encuentro se transformó en un fin de semana de recorrer Quebec, y tiempo después en algo mucho más lindo. Desde ese momento, la historia se contó sola.<br><br>
-        Es loco pensar que, de no habernos cruzado en Canadá, probablemente nuestros caminos nunca se habrían unido. Por eso estamos convencidos de que nada fue casualidad: nos fuimos lejos para encontrarnos y hoy decidimos quedarnos juntos para siempre.
-      </p>
-    </div>
-  </div>
-</section>
-
-<!-- EVENTO -->
-<section id="evento" class="py-5">
-  <div class="container">
-    <div class="section-title" data-aos="fade-up">
-      <h2>Ceremonia & Recepción</h2>
-      <div class="divider"></div>
-    </div>
-
-    <div class="row g-4">
-      <div class="col-md-6" data-aos="fade-up">
-        <div class="card p-4">
-          <h4>Ceremonia</h4>
-          <p>Hora: 17:00</p>
-          <p>Lugar: Iglesia por definir</p>
+    <nav class="navbar navbar-expand-lg fixed-top shadow-sm" id="navbar">
+        <div class="container d-flex align-items-center">
+            <a class="navbar-brand serif fw-bold" href="#">A <span style="color:var(--oro)">&</span> F</a>
+            <div class="ms-auto d-flex align-items-center">
+                <a href="#eventos" class="nav-link-custom d-none d-md-block">Ceremonia & Recepción</a>
+                <a href="#regalos" class="nav-link-custom d-none d-md-block">Regalos</a>
+                <a href="#rsvp" class="btn-gold">Confirmar Asistencia</a>
+            </div>
         </div>
-      </div>
+    </nav>
 
-      <div class="col-md-6" data-aos="fade-up" data-aos-delay="100">
-        <div class="card p-4">
-          <h4>Recepción</h4>
-          <p>Hora: 19:00</p>
-          <p>Lugar: Centro de eventos</p>
+    <header class="hero">
+        <div class="hero-content" data-aos="fade-up">
+            <p class="text-uppercase small mb-2" style="letter-spacing:4px;">Nos Casamos</p>
+            <h1 class="hero-names">Antonia <span class="hero-amp">&</span> Felipe</h1>
+            <div class="hero-date">DOMINGO 11 DE OCTUBRE, 2026</div>
+            <p class="serif italic">Santiago, Chile</p>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
+    </header>
 
-<!-- REGALOS -->
-<section id="regalos" class="py-5 text-center">
-  <div class="container" data-aos="fade-up">
-    <h2>Regalos</h2>
-    <div class="divider"></div>
-    <p>Tu presencia es nuestro mejor regalo, pero si deseas ayudarnos, pronto compartiremos más información aquí.</p>
-  </div>
-</section>
+    <section class="container py-5 mt-5" id="nosotros">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h2 class="display-5 serif">Sobre Nosotros</h2>
+            <div style="width:60px; height:1px; background:var(--oro); margin: 20px auto;"></div>
+        </div>
+        
+        <div class="row g-4 mb-5">
+            <div class="col-md-4" data-aos="zoom-in"><img src="nosotros1.jpg" class="img-nosotros" alt="Nosotros"></div>
+            <div class="col-md-4" data-aos="zoom-in" data-aos-delay="100"><img src="nosotros2.jpg" class="img-nosotros" alt="Nosotros"></div>
+            <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200"><img src="nosotros3.jpg" class="img-nosotros" alt="Nosotros"></div>
+        </div>
 
-<!-- FOOTER -->
-<footer class="text-center py-4">
-  <p>Antonia & Felipe · 2026</p>
-</footer>
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center" data-aos="fade-up">
+                <h4 class="serif mb-4 italic">Nuestra Historia</h4>
+                <div id="historia-texto" class="px-3">Cargando nuestra historia...</div>
+            </div>
+        </div>
+    </section>
 
-<!-- JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/aos@2.3.1/dist/aos.js"></script>
+    <section class="container py-5" id="eventos">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h2 class="display-5 serif">Ceremonia & Recepción</h2>
+            <div style="width:60px; height:1px; background:var(--oro); margin: 25px auto;"></div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6" data-aos="fade-right">
+                <div class="card-wedding d-flex align-items-center">
+                    <div class="icon-container">
+                        <img src="icono_iglesia.png" alt="Ícono Iglesia" class="wedding-icon">
+                    </div>
+                    <div class="event-details">
+                        <h3 class="mb-2 h4">Ceremonia Religiosa</h3>
+                        <p class="text-muted small mb-3"><strong>16:30 HRS</strong><br>Parroquia San Francisco de Sales<br>Sta. María 5600, Vitacura</p>
+                        <div class="d-flex gap-2">
+                            <a href="https://ul.waze.com/ul?venue_id=189662650.1896692038.966394&overview=yes" target="_blank" class="btn-gold flex-grow-1">Waze</a>
+                            <a href="https://maps.google.com/?q=Sta.+María+5600,+Vitacura" target="_blank" class="btn-gold btn-outline flex-grow-1">Maps</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" data-aos="fade-left">
+                <div class="card-wedding d-flex align-items-center">
+                    <div class="icon-container">
+                        <img src="icono_evento.png" alt="Ícono Centro de Eventos" class="wedding-icon">
+                    </div>
+                    <div class="event-details">
+                        <h3 class="mb-2 h4">Celebración</h3>
+                        <p class="text-muted small mb-3"><strong>18:30 HRS</strong><br>Centro de Eventos ENTREMUROS<br>Camino el Guanaco 4819, Huechuraba</p>
+                        <div class="d-flex gap-2">
+                            <a href="https://ul.waze.com/ul?venue_id=189597114.1896233287.2665894&overview=yes" target="_blank" class="btn-gold flex-grow-1">Waze</a>
+                            <a href="https://maps.google.com/?q=Camino+el+Guanaco+4819,+Huechuraba" target="_blank" class="btn-gold btn-outline flex-grow-1">Maps</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<script>
-  // AOS INIT (IMPORTANTE)
-  window.addEventListener('load', function () {
-    AOS.init({
-      duration: 1000,
-      once: true,
-      offset: 50
-    });
-  });
+    <section class="py-5 bg-white" id="regalos">
+        <div class="container text-center" data-aos="fade-up">
+            <h2 class="serif mb-4">Regalos</h2>
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-5">
+                    <div class="p-4 border text-start">
+                        <h5 class="serif">Transferencia</h5>
+                        <p class="small mb-1"><strong>Felipe Giacoman D.</strong><br>RUT: 20.075.028-4<br>Scotiabank - Cta Corriente: 990497664</p>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="p-4 border">
+                        <h5 class="serif">Novios Falabella</h5>
+                        <a href="https://novios.falabella.com/info-evento/evento?codigoEvento=2104486" target="_blank" class="btn-gold mt-2">Ver Lista</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  // NAVBAR HIDE ON SCROLL
-  let prevScroll = window.pageYOffset;
-  const navbar = document.querySelector('.navbar');
+    <section class="container py-5 text-center" id="rsvp">
+        <h2 class="serif h1 mb-4" data-aos="fade-up">Confirmar Asistencia</h2>
+        <p class="text-muted mb-4">¡Esperamos contar contigo!</p>
+        <button class="btn-gold px-5 disabled opacity-50">Próximamente</button>
+    </section>
 
-  window.addEventListener('scroll', () => {
-    let currentScroll = window.pageYOffset;
+    <footer class="py-5 text-center text-muted small">
+        <p class="serif fs-4 mb-1" style="color:var(--oro)">A & F</p>
+        <p>Hecho con ❤️ para nuestra boda</p>
+    </footer>
 
-    if (prevScroll > currentScroll) {
-      navbar.style.top = "0";
-    } else {
-      navbar.style.top = "-80px";
-    }
+    <a href="https://wa.me/56958194677" class="wa-float" target="_blank"><i class="bi bi-whatsapp"></i></a>
 
-    prevScroll = currentScroll;
-  });
-</script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 1000, once: true });
 
+        fetch('historia.txt')
+            .then(response => response.text())
+            .then(data => { document.getElementById('historia-texto').innerText = data; })
+            .catch(error => { document.getElementById('historia-texto').innerText = "Nuestra historia está siendo escrita..."; });
+
+        let lastScroll = 0;
+        window.addEventListener("scroll", () => {
+            const currentScroll = window.pageYOffset;
+            const nav = document.getElementById("navbar");
+            if (currentScroll > lastScroll && currentScroll > 100) nav.classList.add("nav-hidden");
+            else nav.classList.remove("nav-hidden");
+            lastScroll = currentScroll;
+        });
+    </script>
 </body>
 </html>
