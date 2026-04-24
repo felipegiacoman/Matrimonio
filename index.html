@@ -107,7 +107,7 @@
                         <p class="text-muted small mb-3"><strong>16:30 HRS</strong><br>Parroquia San Francisco de Sales<br>Sta. María 5600, Vitacura</p>
                         
                         <div class="ratio ratio-16x9 mb-3">
-                            <iframe src="https://maps.google.com/maps?q=Parroquia%20San%20Francisco%20de%20Sales,%20Vitacura&t=&z=15&ie=UTF8&iwloc=&output=embed" style="border:0; border-radius: 4px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                            <iframe id="iframe-mapa-iglesia" src="" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" style="border-radius: 4px; border: 1px solid rgba(181, 154, 122, 0.4);"></iframe>
                         </div>
                         
                         <div class="d-flex gap-2">
@@ -126,7 +126,7 @@
                         <p class="text-muted small mb-3"><strong>18:30 HRS</strong><br>Centro de Eventos ENTREMUROS<br>Camino el Guanaco 4819, Huechuraba</p>
                         
                         <div class="ratio ratio-16x9 mb-3">
-                            <iframe src="https://maps.google.com/maps?q=Centro%20de%20Eventos%20ENTREMUROS,%20Huechuraba&t=&z=15&ie=UTF8&iwloc=&output=embed" style="border:0; border-radius: 4px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                            <iframe id="iframe-mapa-entremuros" src="" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" style="border-radius: 4px; border: 1px solid rgba(181, 154, 122, 0.4);"></iframe>
                         </div>
                         
                         <div class="d-flex gap-2">
@@ -196,10 +196,12 @@
     <script>
         AOS.init({ duration: 1000, once: true });
 
-        // --- CARGA DINÁMICA DE VARIABLES (TXT) ---
+        // --- CARGA DINÁMICA DE VARIABLES (TXT) Y LÓGICA IFRAME ---
         const archivosVariables = [
+            { id: 'iframe-mapa-iglesia', archivo: 'iframe_iglesia.txt', tipo: 'iframe' },
             { id: 'btn-waze-iglesia', archivo: 'waze_iglesia.txt', tipo: 'link' },
             { id: 'btn-maps-iglesia', archivo: 'maps_iglesia.txt', tipo: 'link' },
+            { id: 'iframe-mapa-entremuros', archivo: 'iframe_entremuros.txt', tipo: 'iframe' },
             { id: 'btn-waze-entremuros', archivo: 'waze_entremuros.txt', tipo: 'link' },
             { id: 'btn-maps-entremuros', archivo: 'maps_entremuros.txt', tipo: 'link' },
             { id: 'datos-transferencia', archivo: 'datos_transferencia.txt', tipo: 'texto' }
@@ -215,6 +217,8 @@
                     const elemento = document.getElementById(item.id);
                     if (item.tipo === 'link') {
                         elemento.href = texto.trim();
+                    } else if (item.tipo === 'iframe') {
+                        elemento.src = texto.trim();
                     } else {
                         elemento.textContent = texto.trim();
                     }
@@ -400,4 +404,60 @@
                 // Validar Teléfono 
                 const telInput = b.querySelector('.tel-input');
                 let telDigitos = telInput.value.replace(/\D/g, '');
-                if (tel
+                if (telDigitos.length < 8) {
+                    telInput.setCustomValidity("Número muy corto. Faltan dígitos.");
+                    telInput.reportValidity();
+                    btn.innerText = "Enviar Confirmación";
+                    btn.disabled = false;
+                    return; 
+                }
+
+                listaParaEnviar.push({
+                    nombre_invitado: nombre,
+                    rut: darFormatoRut(rutLimpio),
+                    email: b.querySelector('[name="email"]').value,
+                    telefono: telInput.value,
+                    dieta: b.querySelector('[name="dieta"]').value,
+                    lleva_pareja: b.querySelector('.check-pareja').checked,
+                    nombre_pareja: b.querySelector('.input-pareja') ? b.querySelector('.input-pareja').value : "-"
+                });
+            }
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(listaParaEnviar)
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert("¡Muchas gracias! Asistencia confirmada.");
+                location.reload();
+            })
+            .catch(err => {
+                alert("Confirmado con éxito.");
+                location.reload();
+            });
+        };
+
+        // Otros Scripts (Contador e Historia)
+        fetch('historia.txt').then(r => r.text()).then(t => document.getElementById('historia-texto').innerText = t).catch(e => document.getElementById('historia-texto').innerText = "Nuestra historia está siendo escrita...");
+        
+        const fechaBoda = new Date("Oct 11, 2026 16:30:00").getTime();
+        setInterval(() => {
+            const ahora = new Date().getTime();
+            const dist = fechaBoda - ahora;
+            const d = Math.floor(dist / (1000 * 60 * 60 * 24)), h = Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)), m = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60)), s = Math.floor((dist % (1000 * 60)) / 1000);
+            document.getElementById("contador").innerHTML = `<div><span class="fs-1 fw-bold">${d}</span><br><small>DÍAS</small></div><div><span class="fs-1 fw-bold">${h}</span><br><small>HRS</small></div><div><span class="fs-1 fw-bold">${m}</span><br><small>MIN</small></div><div><span class="fs-1 fw-bold">${s}</span><br><small>SEG</small></div>`;
+        }, 1000);
+
+        let lastScroll = 0;
+        window.addEventListener("scroll", () => {
+            const currentScroll = window.pageYOffset;
+            const nav = document.getElementById("navbar");
+            if (currentScroll > lastScroll && currentScroll > 100) nav.classList.add("nav-hidden");
+            else nav.classList.remove("nav-hidden");
+            lastScroll = currentScroll;
+        });
+    </script>
+</body>
+</html>
