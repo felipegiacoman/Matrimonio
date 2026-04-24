@@ -83,7 +83,7 @@
     </header>
 
     <section class="container py-4 text-center" data-aos="fade-up">
-        <div id="contador" class="d-flex justify-content-center gap-3 gap-md-5 serif fs-4" style="color: var(--oro);"></div>
+        <div id="contador" class="d-flex justify-content-center gap-3 gap-md-4 gap-lg-5 serif fs-4" style="color: var(--oro);"></div>
     </section>
 
     <section class="container py-5 mt-3" id="nosotros">
@@ -199,19 +199,27 @@
             lastScroll = currentScroll;
         });
 
-        // Contador
+        // Contador con Segundos incluidos
         const fechaBoda = new Date("Oct 11, 2026 16:30:00").getTime();
         const x = setInterval(function() {
             const ahora = new Date().getTime();
             const distancia = fechaBoda - ahora;
+            
             const dias = Math.floor(distancia / (1000 * 60 * 60 * 24));
             const horas = Math.floor((distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
+            const segundos = Math.floor((distancia % (1000 * 60)) / 1000);
+            
             document.getElementById("contador").innerHTML = 
                 `<div><span class="fs-1 fw-bold text-dark">${dias}</span><br><small style="font-size:0.7rem; letter-spacing:2px; color:var(--texto);">DÍAS</small></div>` +
                 `<div><span class="fs-1 fw-bold text-dark">${horas}</span><br><small style="font-size:0.7rem; letter-spacing:2px; color:var(--texto);">HRS</small></div>` +
-                `<div><span class="fs-1 fw-bold text-dark">${minutos}</span><br><small style="font-size:0.7rem; letter-spacing:2px; color:var(--texto);">MIN</small></div>`;
-            if (distancia < 0) { clearInterval(x); document.getElementById("contador").innerHTML = "¡HOY ES EL GRAN DÍA!"; }
+                `<div><span class="fs-1 fw-bold text-dark">${minutos}</span><br><small style="font-size:0.7rem; letter-spacing:2px; color:var(--texto);">MIN</small></div>` +
+                `<div><span class="fs-1 fw-bold text-dark">${segundos}</span><br><small style="font-size:0.7rem; letter-spacing:2px; color:var(--texto);">SEG</small></div>`;
+                
+            if (distancia < 0) { 
+                clearInterval(x); 
+                document.getElementById("contador").innerHTML = "¡HOY ES EL GRAN DÍA!"; 
+            }
         }, 1000);
     </script>
 </body>
