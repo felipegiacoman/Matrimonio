@@ -203,26 +203,21 @@
             })
             .catch(err => console.error("Error cargando nombres:", err));
 
-        // --- FUNCIONES DE VALIDACIÓN RUT Y TELÉFONO ---
+        // --- FUNCIONES DE VALIDACIÓN RUT ---
         function limpiarRut(rut) {
-            // Remueve todo lo que no sea número o la letra K/k
             return rut.replace(/[^0-9kK]/g, '').toUpperCase();
         }
 
         function validarRutAlgoritmo(rutLimpio) {
             if (rutLimpio.length < 8) return false;
-            
             let cuerpo = rutLimpio.slice(0, -1);
             let dv = rutLimpio.slice(-1);
-
-            // Algoritmo Módulo 11
             let suma = 0;
             let multiplo = 2;
             for (let i = cuerpo.length - 1; i >= 0; i--) {
                 suma += parseInt(cuerpo.charAt(i)) * multiplo;
                 multiplo = multiplo < 7 ? multiplo + 1 : 2;
             }
-
             let dvEsperado = 11 - (suma % 11);
             if (dvEsperado === 11) dvEsperado = "0";
             else if (dvEsperado === 10) dvEsperado = "K";
@@ -235,7 +230,6 @@
             if (rutLimpio.length <= 1) return rutLimpio;
             let cuerpo = rutLimpio.slice(0, -1);
             let dv = rutLimpio.slice(-1);
-            // Agrega los puntos al cuerpo
             cuerpo = cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
             return `${cuerpo}-${dv}`;
         }
@@ -264,7 +258,7 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label small fw-bold">TELÉFONO</label>
-                            <input type="tel" class="form-control" name="telefono" value="+569" placeholder="+569XXXXXXXX" required>
+                            <input type="tel" class="form-control tel-input" name="telefono" placeholder="Ej: 98765432 o +569..." required>
                         </div>
                     </div>
                     <div class="mb-3"><label class="form-label small fw-bold">CORREO</label><input type="email" class="form-control" name="email" required></div>
@@ -308,13 +302,42 @@
                     this.value = darFormatoRut(rutLimpio);
                 }
             });
+
+            // AUTO-FORMATO Y VALIDACIÓN NATIVA DE TELÉFONO
+            const inputTel = bloque.querySelector('.tel-input');
+            
+            inputTel.addEventListener('blur', function() {
+                let telRaw = this.value.replace(/[\s\-\(\)]/g, ''); // Limpia espacios y guiones
+                
+                // Reglas de autocompletado
+                if (/^\d{8}$/.test(telRaw)) {
+                    this.value = '+569' + telRaw;
+                } else if (/^9\d{8}$/.test(telRaw)) {
+                    this.value = '+56' + telRaw;
+                } else if (/^569\d{8}$/.test(telRaw)) {
+                    this.value = '+' + telRaw;
+                }
+
+                // Revisar si faltan números
+                let digitos = this.value.replace(/\D/g, '');
+                if (digitos.length > 0 && digitos.length < 8) {
+                    this.setCustomValidity("Número muy corto. Faltan dígitos.");
+                    this.reportValidity(); // Muestra el globo de error nativo
+                } else {
+                    this.setCustomValidity(""); // Todo OK
+                }
+            });
+
+            inputTel.addEventListener('input', function() {
+                this.setCustomValidity(""); // Limpia el error mientras el usuario corrige
+            });
         }
 
         btnSolo.onclick = () => { listaDinamica.innerHTML = ''; contadorInvitados = 0; agregarInvitado(); contenedorFormulario.style.display = 'block'; btnAgregarFamiliar.style.display = 'none'; };
         btnGrupo.onclick = () => { listaDinamica.innerHTML = ''; contadorInvitados = 0; agregarInvitado(); contenedorFormulario.style.display = 'block'; btnAgregarFamiliar.style.display = 'block'; };
         btnAgregarFamiliar.onclick = agregarInvitado;
 
-        // 2. Envío a Cloudflare D1 con Validaciones Estrictas
+        // 2. Envío a Cloudflare D1 con Validaciones
         document.getElementById('rsvpForm').onsubmit = function(e) {
             e.preventDefault();
             const btn = document.getElementById('btn-enviar-rsvp');
@@ -324,43 +347,41 @@
             const bloques = document.querySelectorAll('.bloque-invitado');
             const listaParaEnviar = [];
 
-            // Validación bloque por bloque
             for (let b of bloques) {
                 const nombre = b.querySelector('.nombre-buscar').value;
                 const rutRaw = b.querySelector('[name="rut"]').value;
                 const rutLimpio = limpiarRut(rutRaw);
-                const tel = b.querySelector('[name="telefono"]').value;
-
-                // Validar Módulo 11
+                
+                // Validar RUT (Bloqueante con Alert)
                 if (!validarRutAlgoritmo(rutLimpio)) {
                     alert(`El RUT ingresado para ${nombre} no es válido. Por favor, revisa el dígito verificador.`);
                     btn.innerText = "Enviar Confirmación";
                     btn.disabled = false;
-                    return; // Detiene el envío
+                    return; 
                 }
 
-                // Validar formato de Teléfono (+569 seguido de 8 números)
-                const regexTelefono = /^\+569\d{8}$/;
-                if (!regexTelefono.test(tel)) {
-                    alert(`El teléfono para ${nombre} no es válido. Debe tener el formato estándar (Ej: +56912345678).`);
+                // Validar Teléfono (Chequeo final por si presionan Enter muy rápido)
+                const telInput = b.querySelector('.tel-input');
+                let telDigitos = telInput.value.replace(/\D/g, '');
+                if (telDigitos.length < 8) {
+                    telInput.setCustomValidity("Número muy corto. Faltan dígitos.");
+                    telInput.reportValidity();
                     btn.innerText = "Enviar Confirmación";
                     btn.disabled = false;
-                    return; // Detiene el envío
+                    return; 
                 }
 
-                // Si todo está OK, lo preparamos para enviar con el RUT formateado
                 listaParaEnviar.push({
                     nombre_invitado: nombre,
-                    rut: darFormatoRut(rutLimpio), // Lo guardará como XX.XXX.XXX-X
+                    rut: darFormatoRut(rutLimpio),
                     email: b.querySelector('[name="email"]').value,
-                    telefono: tel,
+                    telefono: telInput.value,
                     dieta: b.querySelector('[name="dieta"]').value,
                     lleva_pareja: b.querySelector('.check-pareja').checked,
                     nombre_pareja: b.querySelector('.input-pareja') ? b.querySelector('.input-pareja').value : "-"
                 });
             }
 
-            // Envío real si pasa todas las validaciones
             fetch(SCRIPT_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
