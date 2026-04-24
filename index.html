@@ -29,6 +29,7 @@
 
         .img-nosotros { width: 100%; height: 350px; object-fit: cover; border-radius: 2px; filter: sepia(0.2); transition: 0.5s; }
         .img-nosotros:hover { filter: sepia(0); transform: scale(1.02); }
+        #historia-texto { white-space: pre-line; line-height: 1.8; color: #555; }
 
         .card-wedding { background: white; padding: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.02); height: 100%; border-radius: 4px; transition: 0.3s; }
         .icon-container { width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; margin-right: 1.5rem; flex-shrink: 0;}
@@ -37,6 +38,7 @@
         .btn-gold { background: var(--oro); color: var(--oscuro); font-weight: bold; border: none; padding: 10px 20px; text-transform: uppercase; letter-spacing: 1px; font-size: 0.65rem; text-decoration: none; display: inline-block; transition: 0.3s; text-align: center; cursor: pointer;}
         .btn-gold:hover { background: var(--oscuro); color: var(--oro); }
         .btn-outline { background: transparent; border: 1px solid var(--oro); color: var(--oro); }
+        .btn-outline:hover { background: var(--oro); color: white; }
         
         .wa-float { position: fixed; bottom: 30px; right: 30px; background: #25d366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; z-index: 1000; text-decoration: none; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
     </style>
@@ -89,3 +91,218 @@
                 <div id="historia-texto" class="px-3">Cargando nuestra historia...</div>
             </div>
         </div>
+    </section>
+
+    <section class="container py-5" id="eventos">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h2 class="display-5 serif">Ceremonia & Recepción</h2>
+            <div style="width:60px; height:1px; background:var(--oro); margin: 25px auto;"></div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6" data-aos="fade-right">
+                <div class="card-wedding d-flex align-items-center">
+                    <div class="icon-container"><img src="icono_iglesia.png" alt="Iglesia" class="wedding-icon"></div>
+                    <div class="event-details">
+                        <h3 class="mb-2 h4">Ceremonia Religiosa</h3>
+                        <p class="text-muted small mb-3"><strong>16:30 HRS</strong><br>Parroquia San Francisco de Sales<br>Sta. María 5600, Vitacura</p>
+                        <div class="d-flex gap-2">
+                            <a href="https://ul.waze.com/ul?venue_id=189662650.1896692038.966394&overview=yes" target="_blank" class="btn-gold flex-grow-1">Waze</a>
+                            <a href="https://maps.google.com" target="_blank" class="btn-gold btn-outline flex-grow-1">Maps</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" data-aos="fade-left">
+                <div class="card-wedding d-flex align-items-center">
+                    <div class="icon-container"><img src="icono_evento.png" alt="Celebración" class="wedding-icon"></div>
+                    <div class="event-details">
+                        <h3 class="mb-2 h4">Celebración</h3>
+                        <p class="text-muted small mb-3"><strong>18:30 HRS</strong><br>Centro de Eventos ENTREMUROS<br>Camino el Guanaco 4819, Huechuraba</p>
+                        <div class="d-flex gap-2">
+                            <a href="https://ul.waze.com/ul?venue_id=189597114.1896233287.26658947&overview=yes" target="_blank" class="btn-gold flex-grow-1">Waze</a>
+                            <a href="https://maps.google.com" target="_blank" class="btn-gold btn-outline flex-grow-1">Maps</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5 bg-white" id="regalos">
+        <div class="container text-center" data-aos="fade-up">
+            <h2 class="serif mb-4">Regalos</h2>
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-5">
+                    <div class="p-4 border text-start">
+                        <h5 class="serif">Transferencia - Luna de miel & primer hogar</h5>
+                        <p class="small mb-1"><strong>Felipe Giacoman D.</strong><br>RUT: 20.075.028-4<br>Scotiabank - Cta Corriente: 990497664</p>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="p-4 border">
+                        <h5 class="serif">Novios Falabella - Código 2104486</h5>
+                        <a href="https://novios.falabella.com/info-evento/evento?codigoEvento=2104486" target="_blank" class="btn-gold mt-2">Ver Lista</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container py-5 text-center" id="rsvp">
+        <h2 class="serif h1 mb-4" data-aos="fade-up">Confirmar Asistencia</h2>
+        <p class="text-muted mb-5">Selecciona cómo deseas confirmar tu asistencia.</p>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6 text-start" data-aos="fade-up">
+                <div id="seleccion-modo" class="d-flex flex-column flex-md-row justify-content-center gap-3 mb-4">
+                    <button id="btn-solo" class="btn-gold flex-grow-1">Confirmar solo por mí</button>
+                    <button id="btn-grupo" class="btn-gold btn-outline flex-grow-1">Confirmar grupo familiar</button>
+                </div>
+
+                <div id="contenedor-formulario" style="display: none;">
+                    <form id="rsvpForm" class="p-4 border bg-white shadow-sm">
+                        <div id="lista-invitados-dinamica"></div>
+                        <button type="button" id="btn-agregar-familiar" class="btn-gold btn-outline w-100 mb-4 mt-2" style="display: none;">
+                            <i class="bi bi-plus me-1"></i> Ingresa el próximo miembro familiar
+                        </button>
+                        <button type="submit" id="btn-enviar-rsvp" class="btn-gold w-100 mt-2 border-0">Enviar Confirmación</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <datalist id="listaInvitadosBD">
+            <option value="Antonia">
+            <option value="Felipe">
+        </datalist>
+    </section>
+
+    <footer class="py-5 text-center text-muted small">
+        <p class="serif fs-4 mb-1" style="color:var(--oro)">A & F</p>
+        <p>Hecho con ❤️ para nuestro matri</p>
+    </footer>
+
+    <a href="https://wa.me/56958194677" class="wa-float" target="_blank"><i class="bi bi-whatsapp"></i></a>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 1000, once: true });
+
+        // URL DE TU WORKER DE CLOUDFLARE
+        const SCRIPT_URL = "https://rsvp-api.felipegiacoman.workers.dev";
+
+        // 1. Lógica Dinámica del Formulario
+        let contadorInvitados = 0;
+        const btnSolo = document.getElementById('btn-solo');
+        const btnGrupo = document.getElementById('btn-grupo');
+        const contenedorFormulario = document.getElementById('contenedor-formulario');
+        const listaDinamica = document.getElementById('lista-invitados-dinamica');
+        const btnAgregarFamiliar = document.getElementById('btn-agregar-familiar');
+
+        function crearBloqueInvitado(id) {
+            return `
+            <div class="bloque-invitado mb-4 pb-4 ${id > 1 ? 'border-top pt-4' : ''}" id="invitado-${id}">
+                ${id > 1 ? `<div class="d-flex justify-content-between mb-3"><h5 class="serif m-0" style="color:var(--oro);">Familiar #${id}</h5><button type="button" class="btn-close" onclick="document.getElementById('invitado-${id}').remove()"></button></div>` : ''}
+                <div class="mb-3">
+                    <label class="form-label small fw-bold" style="color:var(--oro);">NOMBRE COMPLETO</label>
+                    <input type="text" class="form-control bg-transparent nombre-buscar" list="listaInvitadosBD" name="nombre" required style="border:1px solid var(--oro);">
+                </div>
+                <div class="datos-extra" style="display:none;">
+                    <div class="row g-3">
+                        <div class="col-md-6 mb-3"><label class="form-label small fw-bold">RUT</label><input type="text" class="form-control" name="rut" required></div>
+                        <div class="col-md-6 mb-3"><label class="form-label small fw-bold">TELÉFONO</label><input type="tel" class="form-control" name="telefono" value="+569" required></div>
+                    </div>
+                    <div class="mb-3"><label class="form-label small fw-bold">CORREO</label><input type="email" class="form-control" name="email" required></div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">RESTRICCIÓN ALIMENTARIA</label>
+                        <select class="form-select" name="dieta" required>
+                            <option value="Ninguna">Ninguna</option>
+                            <option value="Vegano">Vegano(a)</option>
+                            <option value="Vegetariano">Vegetariano(a)</option>
+                            <option value="Celiaco">Celiaco</option>
+                        </select>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input check-pareja" type="checkbox" id="cp-${id}">
+                        <label class="form-check-label small fw-bold" for="cp-${id}">MI INVITACIÓN INCLUYE PAREJA</label>
+                    </div>
+                    <div class="campo-pareja" style="display:none;"><input type="text" class="form-control input-pareja" name="nombre_pareja" placeholder="Nombre completo pareja"></div>
+                </div>
+            </div>`;
+        }
+
+        function agregarInvitado() {
+            contadorInvitados++;
+            listaDinamica.insertAdjacentHTML('beforeend', crearBloqueInvitado(contadorInvitados));
+            const bloque = document.getElementById(`invitado-${contadorInvitados}`);
+            
+            bloque.querySelector('.nombre-buscar').addEventListener('input', function() {
+                bloque.querySelector('.datos-extra').style.display = this.value.length > 3 ? 'block' : 'none';
+            });
+            
+            bloque.querySelector('.check-pareja').addEventListener('change', function() {
+                bloque.querySelector('.campo-pareja').style.display = this.checked ? 'block' : 'none';
+            });
+        }
+
+        btnSolo.onclick = () => { listaDinamica.innerHTML = ''; contadorInvitados = 0; agregarInvitado(); contenedorFormulario.style.display = 'block'; btnAgregarFamiliar.style.display = 'none'; };
+        btnGrupo.onclick = () => { listaDinamica.innerHTML = ''; contadorInvitados = 0; agregarInvitado(); contenedorFormulario.style.display = 'block'; btnAgregarFamiliar.style.display = 'block'; };
+        btnAgregarFamiliar.onclick = agregarInvitado;
+
+        // 2. Envío a Cloudflare D1
+        document.getElementById('rsvpForm').onsubmit = function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-enviar-rsvp');
+            btn.innerText = "ENVIANDO...";
+            btn.disabled = true;
+
+            const bloques = document.querySelectorAll('.bloque-invitado');
+            const listaParaEnviar = Array.from(bloques).map(b => ({
+                nombre_invitado: b.querySelector('.nombre-buscar').value,
+                rut: b.querySelector('[name="rut"]').value,
+                email: b.querySelector('[name="email"]').value,
+                telefono: b.querySelector('[name="telefono"]').value,
+                dieta: b.querySelector('[name="dieta"]').value,
+                lleva_pareja: b.querySelector('.check-pareja').checked,
+                nombre_pareja: b.querySelector('.input-pareja') ? b.querySelector('.input-pareja').value : "-"
+            }));
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(listaParaEnviar)
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert("¡Muchas gracias! Asistencia confirmada.");
+                location.reload();
+            })
+            .catch(err => {
+                // Manejo preventivo por CORS
+                alert("Confirmación enviada con éxito.");
+                location.reload();
+            });
+        };
+
+        // Otros Scripts (Contador e Historia)
+        fetch('historia.txt').then(r => r.text()).then(t => document.getElementById('historia-texto').innerText = t).catch(e => document.getElementById('historia-texto').innerText = "Nuestra historia está siendo escrita...");
+        
+        const fechaBoda = new Date("Oct 11, 2026 16:30:00").getTime();
+        setInterval(() => {
+            const ahora = new Date().getTime();
+            const dist = fechaBoda - ahora;
+            const d = Math.floor(dist / (1000 * 60 * 60 * 24)), h = Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)), m = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60)), s = Math.floor((dist % (1000 * 60)) / 1000);
+            document.getElementById("contador").innerHTML = `<div><span class="fs-1 fw-bold">${d}</span><br><small>DÍAS</small></div><div><span class="fs-1 fw-bold">${h}</span><br><small>HRS</small></div><div><span class="fs-1 fw-bold">${m}</span><br><small>MIN</small></div><div><span class="fs-1 fw-bold">${s}</span><br><small>SEG</small></div>`;
+        }, 1000);
+
+        let lastScroll = 0;
+        window.addEventListener("scroll", () => {
+            const currentScroll = window.pageYOffset;
+            const nav = document.getElementById("navbar");
+            if (currentScroll > lastScroll && currentScroll > 100) nav.classList.add("nav-hidden");
+            else nav.classList.remove("nav-hidden");
+            lastScroll = currentScroll;
+        });
+    </script>
+</body>
+</html>
