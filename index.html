@@ -203,6 +203,43 @@
             })
             .catch(err => console.error("Error cargando nombres:", err));
 
+        // --- FUNCIONES DE VALIDACIÓN RUT Y TELÉFONO ---
+        function limpiarRut(rut) {
+            // Remueve todo lo que no sea número o la letra K/k
+            return rut.replace(/[^0-9kK]/g, '').toUpperCase();
+        }
+
+        function validarRutAlgoritmo(rutLimpio) {
+            if (rutLimpio.length < 8) return false;
+            
+            let cuerpo = rutLimpio.slice(0, -1);
+            let dv = rutLimpio.slice(-1);
+
+            // Algoritmo Módulo 11
+            let suma = 0;
+            let multiplo = 2;
+            for (let i = cuerpo.length - 1; i >= 0; i--) {
+                suma += parseInt(cuerpo.charAt(i)) * multiplo;
+                multiplo = multiplo < 7 ? multiplo + 1 : 2;
+            }
+
+            let dvEsperado = 11 - (suma % 11);
+            if (dvEsperado === 11) dvEsperado = "0";
+            else if (dvEsperado === 10) dvEsperado = "K";
+            else dvEsperado = dvEsperado.toString();
+
+            return dv === dvEsperado;
+        }
+
+        function darFormatoRut(rutLimpio) {
+            if (rutLimpio.length <= 1) return rutLimpio;
+            let cuerpo = rutLimpio.slice(0, -1);
+            let dv = rutLimpio.slice(-1);
+            // Agrega los puntos al cuerpo
+            cuerpo = cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            return `${cuerpo}-${dv}`;
+        }
+
         // 1. Lógica Dinámica del Formulario
         let contadorInvitados = 0;
         const btnSolo = document.getElementById('btn-solo');
@@ -221,8 +258,14 @@
                 </div>
                 <div class="datos-extra" style="display:none;">
                     <div class="row g-3">
-                        <div class="col-md-6 mb-3"><label class="form-label small fw-bold">RUT</label><input type="text" class="form-control" name="rut" required></div>
-                        <div class="col-md-6 mb-3"><label class="form-label small fw-bold">TELÉFONO</label><input type="tel" class="form-control" name="telefono" value="+569" required></div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label small fw-bold">RUT</label>
+                            <input type="text" class="form-control rut-input" name="rut" placeholder="Ej: 12.345.678-9" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label small fw-bold">TELÉFONO</label>
+                            <input type="tel" class="form-control" name="telefono" value="+569" placeholder="+569XXXXXXXX" required>
+                        </div>
                     </div>
                     <div class="mb-3"><label class="form-label small fw-bold">CORREO</label><input type="email" class="form-control" name="email" required></div>
                     <div class="mb-3">
@@ -248,12 +291,22 @@
             listaDinamica.insertAdjacentHTML('beforeend', crearBloqueInvitado(contadorInvitados));
             const bloque = document.getElementById(`invitado-${contadorInvitados}`);
             
+            // Mostrar datos extras al ingresar nombre
             bloque.querySelector('.nombre-buscar').addEventListener('input', function() {
                 bloque.querySelector('.datos-extra').style.display = this.value.length > 3 ? 'block' : 'none';
             });
             
+            // Lógica de pareja
             bloque.querySelector('.check-pareja').addEventListener('change', function() {
                 bloque.querySelector('.campo-pareja').style.display = this.checked ? 'block' : 'none';
+            });
+
+            // Formateo visual del RUT al salir del campo
+            bloque.querySelector('.rut-input').addEventListener('blur', function() {
+                let rutLimpio = limpiarRut(this.value);
+                if (rutLimpio.length >= 2) {
+                    this.value = darFormatoRut(rutLimpio);
+                }
             });
         }
 
@@ -261,7 +314,7 @@
         btnGrupo.onclick = () => { listaDinamica.innerHTML = ''; contadorInvitados = 0; agregarInvitado(); contenedorFormulario.style.display = 'block'; btnAgregarFamiliar.style.display = 'block'; };
         btnAgregarFamiliar.onclick = agregarInvitado;
 
-        // 2. Envío a Cloudflare D1
+        // 2. Envío a Cloudflare D1 con Validaciones Estrictas
         document.getElementById('rsvpForm').onsubmit = function(e) {
             e.preventDefault();
             const btn = document.getElementById('btn-enviar-rsvp');
@@ -269,16 +322,45 @@
             btn.disabled = true;
 
             const bloques = document.querySelectorAll('.bloque-invitado');
-            const listaParaEnviar = Array.from(bloques).map(b => ({
-                nombre_invitado: b.querySelector('.nombre-buscar').value,
-                rut: b.querySelector('[name="rut"]').value,
-                email: b.querySelector('[name="email"]').value,
-                telefono: b.querySelector('[name="telefono"]').value,
-                dieta: b.querySelector('[name="dieta"]').value,
-                lleva_pareja: b.querySelector('.check-pareja').checked,
-                nombre_pareja: b.querySelector('.input-pareja') ? b.querySelector('.input-pareja').value : "-"
-            }));
+            const listaParaEnviar = [];
 
+            // Validación bloque por bloque
+            for (let b of bloques) {
+                const nombre = b.querySelector('.nombre-buscar').value;
+                const rutRaw = b.querySelector('[name="rut"]').value;
+                const rutLimpio = limpiarRut(rutRaw);
+                const tel = b.querySelector('[name="telefono"]').value;
+
+                // Validar Módulo 11
+                if (!validarRutAlgoritmo(rutLimpio)) {
+                    alert(`El RUT ingresado para ${nombre} no es válido. Por favor, revisa el dígito verificador.`);
+                    btn.innerText = "Enviar Confirmación";
+                    btn.disabled = false;
+                    return; // Detiene el envío
+                }
+
+                // Validar formato de Teléfono (+569 seguido de 8 números)
+                const regexTelefono = /^\+569\d{8}$/;
+                if (!regexTelefono.test(tel)) {
+                    alert(`El teléfono para ${nombre} no es válido. Debe tener el formato estándar (Ej: +56912345678).`);
+                    btn.innerText = "Enviar Confirmación";
+                    btn.disabled = false;
+                    return; // Detiene el envío
+                }
+
+                // Si todo está OK, lo preparamos para enviar con el RUT formateado
+                listaParaEnviar.push({
+                    nombre_invitado: nombre,
+                    rut: darFormatoRut(rutLimpio), // Lo guardará como XX.XXX.XXX-X
+                    email: b.querySelector('[name="email"]').value,
+                    telefono: tel,
+                    dieta: b.querySelector('[name="dieta"]').value,
+                    lleva_pareja: b.querySelector('.check-pareja').checked,
+                    nombre_pareja: b.querySelector('.input-pareja') ? b.querySelector('.input-pareja').value : "-"
+                });
+            }
+
+            // Envío real si pasa todas las validaciones
             fetch(SCRIPT_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
