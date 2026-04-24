@@ -64,8 +64,9 @@
         <div class="hero-content" data-aos="fade-up">
             <p class="text-uppercase small mb-2" style="letter-spacing:4px;">Nos Casamos</p>
             <h1 class="hero-names">Antonia <span class="hero-amp">&</span> Felipe</h1>
-            <div class="hero-date">DOMINGO 11 DE OCTUBRE, 2026</div>
-            <p class="serif italic">Santiago, Chile</p>
+            <div class="hero-date" style="margin-bottom: 12px;">DOMINGO 11 DE OCTUBRE, 2026</div>
+            <p class="text-uppercase" style="color: #cca471; font-weight: 500; letter-spacing: 2px; font-size: 0.75rem; margin-bottom: 25px;">Lunes 12 de Octubre — Feriado</p>
+            <p class="serif italic mb-0">Santiago, Chile</p>
         </div>
     </header>
 
@@ -90,95 +91,3 @@
     </section>
 
     <section class="container py-5" id="eventos">
-        <div class="text-center mb-5" data-aos="fade-up">
-            <h2 class="display-5 serif">Ceremonia & Recepción</h2>
-            <div style="width:60px; height:1px; background:var(--oro); margin: 25px auto;"></div>
-        </div>
-        <div class="row g-4">
-            <div class="col-md-6" data-aos="fade-right">
-                <div class="card-wedding d-flex align-items-center">
-                    <div class="icon-container">
-                        <img src="icono_iglesia.png" alt="Ícono Iglesia" class="wedding-icon">
-                    </div>
-                    <div class="event-details">
-                        <h3 class="mb-2 h4">Ceremonia Religiosa</h3>
-                        <p class="text-muted small mb-3"><strong>16:30 HRS</strong><br>Parroquia San Francisco de Sales<br>Sta. María 5600, Vitacura</p>
-                        <div class="d-flex gap-2">
-                            <a href="https://ul.waze.com/ul?venue_id=189662650.1896692038.966394&overview=yes" target="_blank" class="btn-gold flex-grow-1">Waze</a>
-                            <a href="https://maps.google.com/?q=Sta.+María+5600,+Vitacura" target="_blank" class="btn-gold btn-outline flex-grow-1">Maps</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6" data-aos="fade-left">
-                <div class="card-wedding d-flex align-items-center">
-                    <div class="icon-container">
-                        <img src="icono_evento.png" alt="Ícono Centro de Eventos" class="wedding-icon">
-                    </div>
-                    <div class="event-details">
-                        <h3 class="mb-2 h4">Celebración</h3>
-                        <p class="text-muted small mb-3"><strong>18:30 HRS</strong><br>Centro de Eventos ENTREMUROS<br>Camino el Guanaco 4819, Huechuraba</p>
-                        <div class="d-flex gap-2">
-                            <a href="https://ul.waze.com/ul?venue_id=189597114.1896233287.2665894&overview=yes" target="_blank" class="btn-gold flex-grow-1">Waze</a>
-                            <a href="https://maps.google.com/?q=Camino+el+Guanaco+4819,+Huechuraba" target="_blank" class="btn-gold btn-outline flex-grow-1">Maps</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="py-5 bg-white" id="regalos">
-        <div class="container text-center" data-aos="fade-up">
-            <h2 class="serif mb-4">Regalos</h2>
-            <div class="row g-4 justify-content-center">
-                <div class="col-md-5">
-                    <div class="p-4 border text-start">
-                        <h5 class="serif">Transferencia</h5>
-                        <p class="small mb-1"><strong>Felipe Giacoman D.</strong><br>RUT: 20.075.028-4<br>Scotiabank - Cta Corriente: 990497664</p>
-                    </div>
-                </div>
-                <div class="col-md-5">
-                    <div class="p-4 border">
-                        <h5 class="serif">Novios Falabella</h5>
-                        <a href="https://novios.falabella.com/info-evento/evento?codigoEvento=2104486" target="_blank" class="btn-gold mt-2">Ver Lista</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="container py-5 text-center" id="rsvp">
-        <h2 class="serif h1 mb-4" data-aos="fade-up">Confirmar Asistencia</h2>
-        <p class="text-muted mb-4">¡Esperamos contar contigo!</p>
-        <button class="btn-gold px-5 disabled opacity-50">Próximamente</button>
-    </section>
-
-    <footer class="py-5 text-center text-muted small">
-        <p class="serif fs-4 mb-1" style="color:var(--oro)">A & F</p>
-        <p>Hecho con ❤️ para nuestra boda</p>
-    </footer>
-
-    <a href="https://wa.me/56958194677" class="wa-float" target="_blank"><i class="bi bi-whatsapp"></i></a>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-        AOS.init({ duration: 1000, once: true });
-
-        fetch('historia.txt')
-            .then(response => response.text())
-            .then(data => { document.getElementById('historia-texto').innerText = data; })
-            .catch(error => { document.getElementById('historia-texto').innerText = "Nuestra historia está siendo escrita..."; });
-
-        let lastScroll = 0;
-        window.addEventListener("scroll", () => {
-            const currentScroll = window.pageYOffset;
-            const nav = document.getElementById("navbar");
-            if (currentScroll > lastScroll && currentScroll > 100) nav.classList.add("nav-hidden");
-            else nav.classList.remove("nav-hidden");
-            lastScroll = currentScroll;
-        });
-    </script>
-</body>
-</html>
