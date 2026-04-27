@@ -211,6 +211,13 @@
                 .catch(err => console.warn("Aviso:", err));
         });
 
+        // --- LECTURA DEL TEXTO DEL CORREO DE CONFIRMACIÓN ---
+        let textoCorreoConfirmacion = "¡Gracias por confirmar tu asistencia a nuestro matrimonio!";
+        fetch('correo_confirmacion.txt')
+            .then(res => { if(res.ok) return res.text(); throw new Error(); })
+            .then(txt => textoCorreoConfirmacion = txt.trim())
+            .catch(e => console.log("Se usará el mensaje de correo por defecto."));
+
         // URL DE TU WORKER DE CLOUDFLARE
         const SCRIPT_URL = "https://rsvp-api.felipegiacoman.workers.dev";
 
@@ -311,17 +318,14 @@
             listaDinamica.insertAdjacentHTML('beforeend', crearBloqueInvitado(contadorInvitados));
             const bloque = document.getElementById(`invitado-${contadorInvitados}`);
             
-            // Mostrar datos extras al ingresar nombre
             bloque.querySelector('.nombre-buscar').addEventListener('input', function() {
                 bloque.querySelector('.datos-extra').style.display = this.value.length > 3 ? 'block' : 'none';
             });
             
-            // Lógica de pareja
             bloque.querySelector('.check-pareja').addEventListener('change', function() {
                 bloque.querySelector('.campo-pareja').style.display = this.checked ? 'block' : 'none';
             });
 
-            // Formateo visual del RUT al salir del campo
             bloque.querySelector('.rut-input').addEventListener('blur', function() {
                 let rutLimpio = limpiarRut(this.value);
                 if (rutLimpio.length >= 2) {
@@ -329,13 +333,9 @@
                 }
             });
 
-            // AUTO-FORMATO Y VALIDACIÓN NATIVA DE TELÉFONO
             const inputTel = bloque.querySelector('.tel-input');
-            
             inputTel.addEventListener('blur', function() {
                 let telRaw = this.value.replace(/[\s\-\(\)]/g, ''); 
-                
-                // Reglas de autocompletado
                 if (/^\d{8}$/.test(telRaw)) {
                     this.value = '+569' + telRaw;
                 } else if (/^9\d{8}$/.test(telRaw)) {
@@ -343,8 +343,6 @@
                 } else if (/^569\d{8}$/.test(telRaw)) {
                     this.value = '+' + telRaw;
                 }
-
-                // Revisar si faltan números
                 let digitos = this.value.replace(/\D/g, '');
                 if (digitos.length > 0 && digitos.length < 8) {
                     this.setCustomValidity("Número muy corto. Faltan dígitos.");
@@ -363,7 +361,7 @@
         btnGrupo.onclick = () => { listaDinamica.innerHTML = ''; contadorInvitados = 0; agregarInvitado(); contenedorFormulario.style.display = 'block'; btnAgregarFamiliar.style.display = 'block'; };
         btnAgregarFamiliar.onclick = agregarInvitado;
 
-        // 2. Envío a Cloudflare D1 con Validaciones
+        // 2. Envío a Cloudflare D1 con Validaciones y Texto de Correo
         document.getElementById('rsvpForm').onsubmit = function(e) {
             e.preventDefault();
             const btn = document.getElementById('btn-enviar-rsvp');
@@ -378,7 +376,6 @@
                 const rutRaw = b.querySelector('[name="rut"]').value;
                 const rutLimpio = limpiarRut(rutRaw);
                 
-                // Validar RUT 
                 if (!validarRutAlgoritmo(rutLimpio)) {
                     alert(`El RUT ingresado para ${nombre} no es válido. Por favor, revisa el dígito verificador.`);
                     btn.innerText = "Enviar Confirmación";
@@ -386,7 +383,6 @@
                     return; 
                 }
 
-                // Validar Teléfono 
                 const telInput = b.querySelector('.tel-input');
                 let telDigitos = telInput.value.replace(/\D/g, '');
                 if (telDigitos.length < 8) {
@@ -408,10 +404,14 @@
                 });
             }
 
+            // Ahora enviamos los datos Y el texto del correo al Worker
             fetch(SCRIPT_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(listaParaEnviar)
+                body: JSON.stringify({
+                    invitados: listaParaEnviar,
+                    texto_correo: textoCorreoConfirmacion
+                })
             })
             .then(res => res.json())
             .then(data => {
