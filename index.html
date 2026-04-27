@@ -102,25 +102,26 @@
             <div class="col-md-6" data-aos="fade-right">
                 <div class="card-wedding d-flex align-items-center">
                     <div class="icon-container"><img src="icono_iglesia.png" alt="Iglesia" class="wedding-icon"></div>
-                    <div class="event-details">
+                    <div class="event-details w-100">
                         <h3 class="mb-2 h4">Ceremonia Religiosa</h3>
                         <p class="text-muted small mb-3"><strong>16:30 HRS</strong><br>Parroquia San Francisco de Sales<br>Sta. María 5600, Vitacura</p>
                         <div class="d-flex gap-2">
-                            <a href="#" id="waze-iglesia" target="_blank" class="btn-gold flex-grow-1">Waze</a>
-                            <a href="#" id="maps-iglesia" target="_blank" class="btn-gold btn-outline flex-grow-1">Maps</a>
+                            <a href="#" id="btn-waze-iglesia" target="_blank" class="btn-gold flex-grow-1" style="font-size: 0.6rem;">Ir con Waze</a>
+                            <a href="#" id="btn-maps-iglesia" target="_blank" class="btn-gold btn-outline flex-grow-1" style="font-size: 0.6rem;">Ir con Maps</a>
                         </div>
                     </div>
                 </div>
             </div>
+            
             <div class="col-md-6" data-aos="fade-left">
                 <div class="card-wedding d-flex align-items-center">
                     <div class="icon-container"><img src="icono_evento.png" alt="Celebración" class="wedding-icon"></div>
-                    <div class="event-details">
+                    <div class="event-details w-100">
                         <h3 class="mb-2 h4">Celebración</h3>
                         <p class="text-muted small mb-3"><strong>18:30 HRS</strong><br>Centro de Eventos ENTREMUROS<br>Camino el Guanaco 4819, Huechuraba</p>
                         <div class="d-flex gap-2">
-                            <a href="#" id="waze-entremuros" target="_blank" class="btn-gold flex-grow-1">Waze</a>
-                            <a href="#" id="maps-entremuros" target="_blank" class="btn-gold btn-outline flex-grow-1">Maps</a>
+                            <a href="#" id="btn-waze-entremuros" target="_blank" class="btn-gold flex-grow-1" style="font-size: 0.6rem;">Ir con Waze</a>
+                            <a href="#" id="btn-maps-entremuros" target="_blank" class="btn-gold btn-outline flex-grow-1" style="font-size: 0.6rem;">Ir con Maps</a>
                         </div>
                     </div>
                 </div>
@@ -133,9 +134,9 @@
             <h2 class="serif mb-4">Regalos</h2>
             <div class="row g-4 justify-content-center">
                 <div class="col-md-5">
-                    <div class="p-4 border text-start">
+                    <div class="p-4 border">
                         <h5 class="serif">Transferencia - Luna de miel & primer hogar</h5>
-                        <p class="small mb-1" id="datos-transferencia" style="white-space: pre-line;">Cargando datos bancarios...</p>
+                        <a href="transferencia.html" class="btn-gold mt-2">Transfiere aquí</a>
                     </div>
                 </div>
                 <div class="col-md-5">
@@ -187,11 +188,11 @@
 
         // --- CARGA DINÁMICA DE VARIABLES (TXT) ---
         const archivosVariables = [
-            { id: 'waze-iglesia', archivo: 'waze_iglesia.txt', esLink: true },
-            { id: 'maps-iglesia', archivo: 'maps_iglesia.txt', esLink: true },
-            { id: 'waze-entremuros', archivo: 'waze_entremuros.txt', esLink: true },
-            { id: 'maps-entremuros', archivo: 'maps_entremuros.txt', esLink: true },
-            { id: 'datos-transferencia', archivo: 'datos_transferencia.txt', esLink: false }
+            { id: 'btn-waze-iglesia', archivo: 'waze_iglesia.txt', tipo: 'link' },
+            { id: 'btn-maps-iglesia', archivo: 'maps_iglesia.txt', tipo: 'link' },
+            { id: 'btn-waze-entremuros', archivo: 'waze_entremuros.txt', tipo: 'link' },
+            { id: 'btn-maps-entremuros', archivo: 'maps_entremuros.txt', tipo: 'link' }
+            // Se quitó datos_transferencia de aquí, ya que ahora vive en su propia página.
         ];
 
         archivosVariables.forEach(item => {
@@ -202,11 +203,8 @@
                 })
                 .then(texto => {
                     const elemento = document.getElementById(item.id);
-                    if (item.esLink) {
+                    if (item.tipo === 'link') {
                         elemento.href = texto.trim();
-                    } else {
-                        // El estilo white-space: pre-line en el div respeta los saltos de línea automáticos
-                        elemento.textContent = texto.trim();
                     }
                 })
                 .catch(err => console.warn("Aviso:", err));
@@ -360,90 +358,4 @@
             });
         }
 
-        btnSolo.onclick = () => { listaDinamica.innerHTML = ''; contadorInvitados = 0; agregarInvitado(); contenedorFormulario.style.display = 'block'; btnAgregarFamiliar.style.display = 'none'; };
-        btnGrupo.onclick = () => { listaDinamica.innerHTML = ''; contadorInvitados = 0; agregarInvitado(); contenedorFormulario.style.display = 'block'; btnAgregarFamiliar.style.display = 'block'; };
-        btnAgregarFamiliar.onclick = agregarInvitado;
-
-        // 2. Envío a Cloudflare D1 con Validaciones
-        document.getElementById('rsvpForm').onsubmit = function(e) {
-            e.preventDefault();
-            const btn = document.getElementById('btn-enviar-rsvp');
-            btn.innerText = "ENVIANDO...";
-            btn.disabled = true;
-
-            const bloques = document.querySelectorAll('.bloque-invitado');
-            const listaParaEnviar = [];
-
-            for (let b of bloques) {
-                const nombre = b.querySelector('.nombre-buscar').value;
-                const rutRaw = b.querySelector('[name="rut"]').value;
-                const rutLimpio = limpiarRut(rutRaw);
-                
-                // Validar RUT 
-                if (!validarRutAlgoritmo(rutLimpio)) {
-                    alert(`El RUT ingresado para ${nombre} no es válido. Por favor, revisa el dígito verificador.`);
-                    btn.innerText = "Enviar Confirmación";
-                    btn.disabled = false;
-                    return; 
-                }
-
-                // Validar Teléfono 
-                const telInput = b.querySelector('.tel-input');
-                let telDigitos = telInput.value.replace(/\D/g, '');
-                if (telDigitos.length < 8) {
-                    telInput.setCustomValidity("Número muy corto. Faltan dígitos.");
-                    telInput.reportValidity();
-                    btn.innerText = "Enviar Confirmación";
-                    btn.disabled = false;
-                    return; 
-                }
-
-                listaParaEnviar.push({
-                    nombre_invitado: nombre,
-                    rut: darFormatoRut(rutLimpio),
-                    email: b.querySelector('[name="email"]').value,
-                    telefono: telInput.value,
-                    dieta: b.querySelector('[name="dieta"]').value,
-                    lleva_pareja: b.querySelector('.check-pareja').checked,
-                    nombre_pareja: b.querySelector('.input-pareja') ? b.querySelector('.input-pareja').value : "-"
-                });
-            }
-
-            fetch(SCRIPT_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(listaParaEnviar)
-            })
-            .then(res => res.json())
-            .then(data => {
-                alert("¡Muchas gracias! Asistencia confirmada.");
-                location.reload();
-            })
-            .catch(err => {
-                alert("Confirmado con éxito.");
-                location.reload();
-            });
-        };
-
-        // Otros Scripts (Contador e Historia)
-        fetch('historia.txt').then(r => r.text()).then(t => document.getElementById('historia-texto').innerText = t).catch(e => document.getElementById('historia-texto').innerText = "Nuestra historia está siendo escrita...");
-        
-        const fechaBoda = new Date("Oct 11, 2026 16:30:00").getTime();
-        setInterval(() => {
-            const ahora = new Date().getTime();
-            const dist = fechaBoda - ahora;
-            const d = Math.floor(dist / (1000 * 60 * 60 * 24)), h = Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)), m = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60)), s = Math.floor((dist % (1000 * 60)) / 1000);
-            document.getElementById("contador").innerHTML = `<div><span class="fs-1 fw-bold">${d}</span><br><small>DÍAS</small></div><div><span class="fs-1 fw-bold">${h}</span><br><small>HRS</small></div><div><span class="fs-1 fw-bold">${m}</span><br><small>MIN</small></div><div><span class="fs-1 fw-bold">${s}</span><br><small>SEG</small></div>`;
-        }, 1000);
-
-        let lastScroll = 0;
-        window.addEventListener("scroll", () => {
-            const currentScroll = window.pageYOffset;
-            const nav = document.getElementById("navbar");
-            if (currentScroll > lastScroll && currentScroll > 100) nav.classList.add("nav-hidden");
-            else nav.classList.remove("nav-hidden");
-            lastScroll = currentScroll;
-        });
-    </script>
-</body>
-</html>
+        btnSolo.onclick = () => { listaDinamica.innerHTML =
