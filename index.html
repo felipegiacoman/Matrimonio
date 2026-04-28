@@ -134,7 +134,7 @@
             <h2 class="serif mb-4">Regalos</h2>
             <div class="row g-4 justify-content-center">
                 <div class="col-md-5">
-                    <div class="p-4 border">
+                    <div class="p-4 border text-start">
                         <h5 class="serif">Transferencia - Luna de miel & primer hogar</h5>
                         <a href="transferencia.html" class="btn-gold mt-2">Transfiere aquí</a>
                     </div>
@@ -171,7 +171,7 @@
                 </div>
                 
                 <div class="text-center mt-4" data-aos="fade-up">
-                    <p class="text-muted small mb-2">¿Confirmaste y ya no puedes asistir?</p>
+                    <p class="text-muted small mb-2">¿No puedes asistir?</p>
                     <a href="cancelacion.html" class="btn-gold btn-outline" style="padding: 5px 15px;">No puedo asistir</a>
                 </div>
             </div>
@@ -195,7 +195,7 @@
         let asuntoRSVP = "Asistencia Matrimonio Anto y Felipe confirmada";
         let cuerpoRSVP = "Tu asistencia ha sido confirmada. ¡Te esperamos!";
 
-        // 1. CARGA DINÁMICA DE VARIABLES (LINKS Y TEXTOS CORREO)
+        // 1. CARGA DINÁMICA DE VARIABLES
         fetch('waze_iglesia.txt').then(r => r.text()).then(t => document.getElementById('btn-waze-iglesia').href = t.trim()).catch(e => {});
         fetch('maps_iglesia.txt').then(r => r.text()).then(t => document.getElementById('btn-maps-iglesia').href = t.trim()).catch(e => {});
         fetch('waze_entremuros.txt').then(r => r.text()).then(t => document.getElementById('btn-waze-entremuros').href = t.trim()).catch(e => {});
@@ -204,7 +204,6 @@
         fetch('asunto_rsvp.txt').then(r => { if(r.ok) return r.text(); throw new Error(); }).then(t => asuntoRSVP = t.trim()).catch(e => {});
         fetch('cuerpo_rsvp.txt').then(r => { if(r.ok) return r.text(); throw new Error(); }).then(t => cuerpoRSVP = t.trim()).catch(e => {});
 
-        // PRECARGA DE NOMBRES PARA EL AUTOCOMPLETADO
         fetch(SCRIPT_URL).then(res => res.json()).then(data => {
             const datalist = document.getElementById('listaInvitadosBD');
             data.forEach(item => {
@@ -344,7 +343,7 @@
             .catch(() => { alert("Hubo un error, pero intentaremos procesarlo."); location.reload(); });
         };
 
-        // OTROS SCRIPTS (CONTADOR E HISTORIA)
+        // OTROS SCRIPTS
         fetch('historia.txt').then(r => r.text()).then(t => document.getElementById('historia-texto').innerText = t).catch(e => {});
         const fechaBoda = new Date("Oct 11, 2026 16:30:00").getTime();
         setInterval(() => {

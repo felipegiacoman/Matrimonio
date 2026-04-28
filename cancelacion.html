@@ -126,14 +126,14 @@
                     cuerpo: cuerpoCancelacion
                 })
             })
-            .then(res => res.json())
-            .then(data => {
-                if(data.error) throw new Error(data.error);
+            .then(async res => {
+                const data = await res.json();
+                if(data.error) throw new Error(data.error); // Forzamos mostrar el error del Worker
                 alert("Cancelación procesada con éxito.");
                 window.location.href = "index.html";
             })
             .catch(err => {
-                alert("Hubo un problema. Intenta nuevamente.");
+                alert("Error de la base de datos: " + err.message);
                 btn.innerText = "Enviar Cancelación"; btn.disabled = false;
             });
         };
