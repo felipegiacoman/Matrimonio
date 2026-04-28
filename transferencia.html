@@ -83,37 +83,4 @@
         </div>
     </section>
 
-    <footer class="py-5 text-center text-muted small">
-        <p class="serif fs-4 mb-1" style="color:var(--oro)">A & F</p>
-        <p>Hecho con ❤️ para nuestro matri</p>
-    </footer>
-
-    <script>
-        const SCRIPT_URL = "https://rsvp-api.felipegiacoman.workers.dev";
-        let asuntoRegalo = "¡Gracias por tu regalo!";
-        let cuerpoRegalo = "Hola {nombre}, hemos recibido tu confirmación de transferencia. ¡Mil gracias por acompañarnos en este proceso!";
-
-        // Cargar variables desde los TXT (Si no los encuentra, usa los de arriba por defecto)
-        fetch('datos_transferencia.txt').then(r => r.text()).then(t => document.getElementById('datos-transferencia').textContent = t.trim()).catch(e => console.warn("Aviso:", e));
-        fetch('asunto_regalo.txt').then(r => { if(r.ok) return r.text(); throw new Error(); }).then(t => asuntoRegalo = t.trim()).catch(e => console.warn("Usa asunto regalo por defecto"));
-        fetch('cuerpo_regalo.txt').then(r => { if(r.ok) return r.text(); throw new Error(); }).then(t => cuerpoRegalo = t.trim()).catch(e => console.warn("Usa cuerpo regalo por defecto"));
-
-        document.getElementById('regaloForm').onsubmit = function(e) {
-            // Disparamos el correo de confirmación al invitado vía Worker en segundo plano
-            fetch(SCRIPT_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    tipo: "regalo",
-                    nombre: document.getElementById('nombreRegalo').value,
-                    email: document.getElementById('emailRegalo').value,
-                    asunto: asuntoRegalo,
-                    cuerpo: cuerpoRegalo
-                })
-            }).catch(e => console.error("Error al gatillar el correo de confirmación:", e));
-            
-            // Dejamos que el formulario siga su curso hacia FormSubmit (para mandarte a ti el comprobante)
-        };
-    </script>
-</body>
-</html>
+    <footer class="py-5 text-center text-
