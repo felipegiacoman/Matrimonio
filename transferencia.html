@@ -4,92 +4,70 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transferencia — Antonia & Felipe</title>
-    
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-
     <style>
         :root { --oro: #b59a7a; --crema: #f2ece4; --texto: #2d2d2d; --oscuro: #1a1a1a; }
-        body { font-family: 'Montserrat', sans-serif; background-color: var(--crema); color: var(--texto); overflow-x: hidden; }
-        h1, h2, h3, h4, h5, .serif { font-family: 'Playfair Display', serif; }
-
-        .navbar { background: rgba(242, 236, 228, 0.95); padding: 0.8rem 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .nav-link-custom { color: var(--texto); text-decoration: none; text-transform: uppercase; font-size: 0.65rem; letter-spacing: 1px; margin-right: 20px; font-weight: 500; transition: 0.3s; }
-        .nav-link-custom:hover { color: var(--oro); }
-
-        .btn-gold { background: var(--oro); color: var(--oscuro); font-weight: bold; border: none; padding: 10px 20px; text-transform: uppercase; letter-spacing: 1px; font-size: 0.65rem; text-decoration: none; display: inline-block; transition: 0.3s; text-align: center; cursor: pointer;}
-        .btn-gold:hover { background: var(--oscuro); color: var(--oro); }
-        
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--crema); color: var(--texto); padding-top: 80px; }
+        h1, h2, h3, .serif { font-family: 'Playfair Display', serif; }
         .box-datos { background: white; border: 1px solid rgba(181, 154, 122, 0.3); border-radius: 4px; }
+        .btn-gold { background: var(--oro); color: var(--oscuro); font-weight: bold; border: none; padding: 10px 20px; text-transform: uppercase; letter-spacing: 1px; font-size: 0.65rem; text-decoration: none; transition: 0.3s; }
+        .btn-gold:hover { background: var(--oscuro); color: var(--oro); }
     </style>
 </head>
-<body style="padding-top: 80px;">
-
-    <nav class="navbar navbar-expand-lg fixed-top" id="navbar">
+<body>
+    <nav class="navbar navbar-expand-lg fixed-top" style="background: rgba(242, 236, 228, 0.95);">
         <div class="container d-flex align-items-center">
             <a class="navbar-brand serif fw-bold" href="index.html">A <span style="color:var(--oro)">&</span> F</a>
-            <div class="ms-auto">
-                <a href="index.html" class="nav-link-custom"><i class="bi bi-arrow-left"></i> Volver al inicio</a>
-            </div>
+            <a href="index.html" class="ms-auto" style="text-decoration:none; color:var(--texto); font-size:0.7rem; text-transform:uppercase;"><i class="bi bi-arrow-left"></i> Volver</a>
         </div>
     </nav>
 
-    <section class="container py-5" id="transferencia">
+    <section class="container py-5">
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-6">
-                
-                <div class="text-center mb-4">
-                    <h2 class="serif">Datos de Transferencia</h2>
-                    <div style="width:60px; height:1px; background:var(--oro); margin: 20px auto;"></div>
-                </div>
-                
-                <div class="box-datos p-4 shadow-sm mb-5 text-center">
-                    <p class="mb-0" id="datos-transferencia" style="white-space: pre-line; line-height: 1.8;">Cargando datos bancarios...</p>
-                </div>
+                <div class="text-center mb-4"><h2 class="serif">Datos de Transferencia</h2><div style="width:60px; height:1px; background:var(--oro); margin: 20px auto;"></div></div>
+                <div class="box-datos p-4 shadow-sm mb-5 text-center"><p class="mb-0" id="datos-transferencia" style="white-space: pre-line; line-height: 1.8;">Cargando...</p></div>
 
-                <form action="https://formsubmit.co/regalos@antoyfelipe.com" method="POST" enctype="multipart/form-data" class="box-datos p-4 shadow-sm">
+                <form id="regaloForm" action="https://formsubmit.co/regalos@antoyfelipe.com" method="POST" enctype="multipart/form-data" class="box-datos p-4 shadow-sm">
                     <h5 class="serif mb-4 text-center" style="color:var(--oro);">Notificar Transferencia</h5>
-                    
-                    <input type="text" name="_honey" style="display:none"> <input type="hidden" name="_captcha" value="false"> <input type="hidden" name="_subject" value="¡Nuevo Regalo/Transferencia de Matrimonio!"> <div class="mb-3">
-                        <label class="form-label small fw-bold">TU NOMBRE COMPLETO</label>
-                        <input type="text" class="form-control bg-transparent" name="Nombre_Invitado" required style="border:1px solid var(--oro);">
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">MENSAJE PARA LOS NOVIOS (Opcional)</label>
-                        <textarea class="form-control bg-transparent" name="Mensaje" rows="4" style="border:1px solid var(--oro);"></textarea>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <label class="form-label small fw-bold">COMPROBANTE (Opcional)</label>
-                        <p class="text-muted" style="font-size: 0.7rem; margin-top:-5px;">Puedes adjuntar el PDF o una foto (máx. 10MB)</p>
-                        <input type="file" class="form-control" name="Comprobante" accept="image/*,.pdf" style="border:1px solid var(--oro);">
-                    </div>
-                    
+                    <input type="text" name="_honey" style="display:none">
+                    <input type="hidden" name="_captcha" value="false">
+                    <input type="hidden" name="_subject" value="¡Nuevo Regalo/Transferencia de Matrimonio!">
+                    <div class="mb-3"><label class="form-label small fw-bold">NOMBRE COMPLETO</label><input type="text" class="form-control" name="Nombre" id="nombreRegalo" required></div>
+                    <div class="mb-3"><label class="form-label small fw-bold">TU CORREO</label><input type="email" class="form-control" name="Email" id="emailRegalo" required></div>
+                    <div class="mb-3"><label class="form-label small fw-bold">MENSAJE (Opcional)</label><textarea class="form-control" name="Mensaje" rows="3"></textarea></div>
+                    <div class="mb-4"><label class="form-label small fw-bold">COMPROBANTE (Opcional)</label><input type="file" class="form-control" name="Comprobante" accept="image/*,.pdf"></div>
                     <button type="submit" class="btn-gold w-100 border-0">Enviar Comprobante</button>
                 </form>
-
             </div>
         </div>
     </section>
 
-    <footer class="py-5 text-center text-muted small">
-        <p class="serif fs-4 mb-1" style="color:var(--oro)">A & F</p>
-        <p>Hecho con ❤️ para nuestro matri</p>
-    </footer>
-
     <script>
-        // Carga los datos bancarios desde el archivo de texto
-        fetch('datos_transferencia.txt')
-            .then(res => {
-                if (!res.ok) throw new Error("No se pudo cargar el archivo");
-                return res.text();
-            })
-            .then(texto => {
-                document.getElementById('datos-transferencia').textContent = texto.trim();
-            })
-            .catch(err => console.warn("Aviso:", err));
+        const SCRIPT_URL = "https://rsvp-api.felipegiacoman.workers.dev";
+        let asuntoRegalo = "", cuerpoRegalo = "";
+
+        fetch('datos_transferencia.txt').then(r => r.text()).then(t => document.getElementById('datos-transferencia').textContent = t.trim());
+        fetch('asunto_regalo.txt').then(r => r.text()).then(t => asuntoRegalo = t.trim());
+        fetch('cuerpo_regalo.txt').then(r => r.text()).then(t => cuerpoRegalo = t.trim());
+
+        document.getElementById('regaloForm').onsubmit = function(e) {
+            // Disparamos el correo de confirmación al invitado vía Worker antes de enviar a FormSubmit
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    tipo: "regalo",
+                    nombre: document.getElementById('nombreRegalo').value,
+                    email: document.getElementById('emailRegalo').value,
+                    asunto: asuntoRegalo,
+                    cuerpo: cuerpoRegalo
+                })
+            }).catch(e => console.error("Error confirmación:", e));
+            // Dejamos que el formulario siga su curso hacia FormSubmit
+        };
     </script>
 </body>
 </html>
