@@ -134,7 +134,7 @@
             <h2 class="serif mb-4">Regalos</h2>
             <div class="row g-4 justify-content-center">
                 <div class="col-md-5">
-                    <div class="p-4 border text-start">
+                    <div class="p-4 border">
                         <h5 class="serif">Transferencia - Luna de miel & primer hogar</h5>
                         <a href="transferencia.html" class="btn-gold mt-2">Transfiere aquí</a>
                     </div>
@@ -169,6 +169,12 @@
                         <button type="submit" id="btn-enviar-rsvp" class="btn-gold w-100 mt-2 border-0">Enviar Confirmación</button>
                     </form>
                 </div>
+
+                <div class="text-center mt-4" data-aos="fade-up">
+                    <p class="text-muted small mb-2">¿No puedes asistir?</p>
+                    <a href="cancelacion.html" class="btn-gold btn-outline" style="padding: 5px 15px;">No puedo asistir</a>
+                </div>
+
             </div>
         </div>
         <datalist id="listaInvitadosBD"></datalist>
@@ -186,102 +192,54 @@
     <script>
         AOS.init({ duration: 1000, once: true });
 
-        // --- CARGA DINÁMICA DE VARIABLES (TXT) ---
-        const archivosVariables = [
-            { id: 'btn-waze-iglesia', archivo: 'waze_iglesia.txt', tipo: 'link' },
-            { id: 'btn-maps-iglesia', archivo: 'maps_iglesia.txt', tipo: 'link' },
-            { id: 'btn-waze-entremuros', archivo: 'waze_entremuros.txt', tipo: 'link' },
-            { id: 'btn-maps-entremuros', archivo: 'maps_entremuros.txt', tipo: 'link' }
-        ];
-
-        archivosVariables.forEach(item => {
-            fetch(item.archivo)
-                .then(res => {
-                    if (!res.ok) throw new Error(`Archivo no encontrado: ${item.archivo}`);
-                    return res.text();
-                })
-                .then(texto => {
-                    const elemento = document.getElementById(item.id);
-                    if (item.tipo === 'link') {
-                        elemento.href = texto.trim();
-                    } else {
-                        elemento.textContent = texto.trim();
-                    }
-                })
-                .catch(err => console.warn("Aviso:", err));
-        });
-
-        // --- EXTRACCIÓN DE TEXTOS DE CORREO DE CONFIRMACIÓN RSVP ---
+        const SCRIPT_URL = "https://rsvp-api.felipegiacoman.workers.dev";
         let asuntoRSVP = "Asistencia Matrimonio Anto y Felipe confirmada";
         let cuerpoRSVP = "Tu asistencia ha sido confirmada. ¡Te esperamos!";
 
-        fetch('asunto_rsvp.txt')
-            .then(res => { if(res.ok) return res.text(); throw new Error(); })
-            .then(txt => asuntoRSVP = txt.trim())
-            .catch(e => console.log("Se usará asunto RSVP por defecto."));
+        // 1. CARGA DINÁMICA DE VARIABLES
+        fetch('waze_iglesia.txt').then(r => r.text()).then(t => document.getElementById('btn-waze-iglesia').href = t.trim()).catch(e => {});
+        fetch('maps_iglesia.txt').then(r => r.text()).then(t => document.getElementById('btn-maps-iglesia').href = t.trim()).catch(e => {});
+        fetch('waze_entremuros.txt').then(r => r.text()).then(t => document.getElementById('btn-waze-entremuros').href = t.trim()).catch(e => {});
+        fetch('maps_entremuros.txt').then(r => r.text()).then(t => document.getElementById('btn-maps-entremuros').href = t.trim()).catch(e => {});
+        
+        fetch('asunto_rsvp.txt').then(r => { if(r.ok) return r.text(); throw new Error(); }).then(t => asuntoRSVP = t.trim()).catch(e => {});
+        fetch('cuerpo_rsvp.txt').then(r => { if(r.ok) return r.text(); throw new Error(); }).then(t => cuerpoRSVP = t.trim()).catch(e => {});
 
-        fetch('cuerpo_rsvp.txt')
-            .then(res => { if(res.ok) return res.text(); throw new Error(); })
-            .then(txt => cuerpoRSVP = txt.trim())
-            .catch(e => console.log("Se usará cuerpo RSVP por defecto."));
+        fetch(SCRIPT_URL).then(res => res.json()).then(data => {
+            const datalist = document.getElementById('listaInvitadosBD');
+            data.forEach(item => {
+                if(item.nombre_invitado) {
+                    let opt = document.createElement('option');
+                    opt.value = item.nombre_invitado;
+                    datalist.appendChild(opt);
+                }
+            });
+        }).catch(err => console.error("Error cargando nombres:", err));
 
-
-        // URL DE TU WORKER DE CLOUDFLARE
-        const SCRIPT_URL = "https://rsvp-api.felipegiacoman.workers.dev";
-
-        // --- BLOQUE DE PRECARGA DE NOMBRES ---
-        fetch(SCRIPT_URL)
-            .then(res => res.json())
-            .then(data => {
-                const datalist = document.getElementById('listaInvitadosBD');
-                data.forEach(item => {
-                    if(item.nombre_invitado) {
-                        let opt = document.createElement('option');
-                        opt.value = item.nombre_invitado;
-                        datalist.appendChild(opt);
-                    }
-                });
-            })
-            .catch(err => console.error("Error cargando nombres:", err));
-
-        // --- FUNCIONES DE VALIDACIÓN RUT ---
-        function limpiarRut(rut) {
-            return rut.replace(/[^0-9kK]/g, '').toUpperCase();
-        }
-
+        // 2. FUNCIONES DE VALIDACIÓN RUT Y TELÉFONO
+        function limpiarRut(rut) { return rut.replace(/[^0-9kK]/g, '').toUpperCase(); }
         function validarRutAlgoritmo(rutLimpio) {
             if (rutLimpio.length < 8) return false;
-            let cuerpo = rutLimpio.slice(0, -1);
-            let dv = rutLimpio.slice(-1);
-            let suma = 0;
-            let multiplo = 2;
+            let cuerpo = rutLimpio.slice(0, -1), dv = rutLimpio.slice(-1), suma = 0, multiplo = 2;
             for (let i = cuerpo.length - 1; i >= 0; i--) {
                 suma += parseInt(cuerpo.charAt(i)) * multiplo;
                 multiplo = multiplo < 7 ? multiplo + 1 : 2;
             }
             let dvEsperado = 11 - (suma % 11);
-            if (dvEsperado === 11) dvEsperado = "0";
-            else if (dvEsperado === 10) dvEsperado = "K";
-            else dvEsperado = dvEsperado.toString();
-
-            return dv === dvEsperado;
+            if (dvEsperado === 11) dvEsperado = "0"; else if (dvEsperado === 10) dvEsperado = "K";
+            return dv === dvEsperado.toString();
         }
-
         function darFormatoRut(rutLimpio) {
             if (rutLimpio.length <= 1) return rutLimpio;
-            let cuerpo = rutLimpio.slice(0, -1);
-            let dv = rutLimpio.slice(-1);
-            cuerpo = cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-            return `${cuerpo}-${dv}`;
+            let cuerpo = rutLimpio.slice(0, -1), dv = rutLimpio.slice(-1);
+            return cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "-" + dv;
         }
 
-        // 1. Lógica Dinámica del Formulario
+        // 3. LÓGICA DINÁMICA DEL FORMULARIO
         let contadorInvitados = 0;
-        const btnSolo = document.getElementById('btn-solo');
-        const btnGrupo = document.getElementById('btn-grupo');
-        const contenedorFormulario = document.getElementById('contenedor-formulario');
-        const listaDinamica = document.getElementById('lista-invitados-dinamica');
-        const btnAgregarFamiliar = document.getElementById('btn-agregar-familiar');
+        const btnSolo = document.getElementById('btn-solo'), btnGrupo = document.getElementById('btn-grupo'), 
+              contenedorFormulario = document.getElementById('contenedor-formulario'), 
+              listaDinamica = document.getElementById('lista-invitados-dinamica'), btnAgregarFamiliar = document.getElementById('btn-agregar-familiar');
 
         function crearBloqueInvitado(id) {
             return `
@@ -293,14 +251,8 @@
                 </div>
                 <div class="datos-extra" style="display:none;">
                     <div class="row g-3">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label small fw-bold">RUT</label>
-                            <input type="text" class="form-control rut-input" name="rut" placeholder="Ej: 12.345.678-9" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label small fw-bold">TELÉFONO</label>
-                            <input type="tel" class="form-control tel-input" name="telefono" placeholder="Ej: 98765432 o +569..." required>
-                        </div>
+                        <div class="col-md-6 mb-3"><label class="form-label small fw-bold">RUT</label><input type="text" class="form-control rut-input" name="rut" placeholder="Ej: 12.345.678-9" required></div>
+                        <div class="col-md-6 mb-3"><label class="form-label small fw-bold">TELÉFONO</label><input type="tel" class="form-control tel-input" name="telefono" placeholder="Ej: 98765432" required></div>
                     </div>
                     <div class="mb-3"><label class="form-label small fw-bold">CORREO</label><input type="email" class="form-control" name="email" required></div>
                     <div class="mb-3">
@@ -312,10 +264,7 @@
                             <option value="Celiaco">Celiaco</option>
                         </select>
                     </div>
-                    <div class="form-check mb-2">
-                        <input class="form-check-input check-pareja" type="checkbox" id="cp-${id}">
-                        <label class="form-check-label small fw-bold" for="cp-${id}">MI INVITACIÓN INCLUYE PAREJA</label>
-                    </div>
+                    <div class="form-check mb-2"><input class="form-check-input check-pareja" type="checkbox" id="cp-${id}"><label class="form-check-label small fw-bold" for="cp-${id}">MI INVITACIÓN INCLUYE PAREJA</label></div>
                     <div class="campo-pareja" style="display:none;"><input type="text" class="form-control input-pareja" name="nombre_pareja" placeholder="Nombre completo pareja"></div>
                 </div>
             </div>`;
@@ -326,104 +275,60 @@
             listaDinamica.insertAdjacentHTML('beforeend', crearBloqueInvitado(contadorInvitados));
             const bloque = document.getElementById(`invitado-${contadorInvitados}`);
             
-            // Mostrar datos extras al ingresar nombre
-            bloque.querySelector('.nombre-buscar').addEventListener('input', function() {
-                bloque.querySelector('.datos-extra').style.display = this.value.length > 3 ? 'block' : 'none';
+            bloque.querySelector('.nombre-buscar').addEventListener('input', function() { 
+                bloque.querySelector('.datos-extra').style.display = this.value.length > 3 ? 'block' : 'none'; 
             });
             
-            // Lógica de pareja
-            bloque.querySelector('.check-pareja').addEventListener('change', function() {
-                bloque.querySelector('.campo-pareja').style.display = this.checked ? 'block' : 'none';
+            bloque.querySelector('.check-pareja').addEventListener('change', function() { 
+                bloque.querySelector('.campo-pareja').style.display = this.checked ? 'block' : 'none'; 
             });
-
-            // Formateo visual del RUT al salir del campo
-            bloque.querySelector('.rut-input').addEventListener('blur', function() {
-                let rutLimpio = limpiarRut(this.value);
-                if (rutLimpio.length >= 2) {
-                    this.value = darFormatoRut(rutLimpio);
-                }
+            
+            bloque.querySelector('.rut-input').addEventListener('blur', function() { 
+                let r = limpiarRut(this.value); if (r.length >= 2) this.value = darFormatoRut(r); 
             });
-
-            // AUTO-FORMATO Y VALIDACIÓN NATIVA DE TELÉFONO
+            
             const inputTel = bloque.querySelector('.tel-input');
-            
             inputTel.addEventListener('blur', function() {
                 let telRaw = this.value.replace(/[\s\-\(\)]/g, ''); 
-                
-                // Reglas de autocompletado
-                if (/^\d{8}$/.test(telRaw)) {
-                    this.value = '+569' + telRaw;
-                } else if (/^9\d{8}$/.test(telRaw)) {
-                    this.value = '+56' + telRaw;
-                } else if (/^569\d{8}$/.test(telRaw)) {
-                    this.value = '+' + telRaw;
-                }
-
-                // Revisar si faltan números
+                if (/^\d{8}$/.test(telRaw)) this.value = '+569' + telRaw;
+                else if (/^9\d{8}$/.test(telRaw)) this.value = '+56' + telRaw;
+                else if (/^569\d{8}$/.test(telRaw)) this.value = '+' + telRaw;
                 let digitos = this.value.replace(/\D/g, '');
-                if (digitos.length > 0 && digitos.length < 8) {
-                    this.setCustomValidity("Número muy corto. Faltan dígitos.");
-                    this.reportValidity(); 
-                } else {
-                    this.setCustomValidity(""); 
-                }
+                if (digitos.length > 0 && digitos.length < 8) { 
+                    this.setCustomValidity("Número muy corto."); this.reportValidity(); 
+                } else { this.setCustomValidity(""); }
             });
-
-            inputTel.addEventListener('input', function() {
-                this.setCustomValidity(""); 
-            });
+            inputTel.addEventListener('input', function() { this.setCustomValidity(""); });
         }
 
         btnSolo.onclick = () => { listaDinamica.innerHTML = ''; contadorInvitados = 0; agregarInvitado(); contenedorFormulario.style.display = 'block'; btnAgregarFamiliar.style.display = 'none'; };
         btnGrupo.onclick = () => { listaDinamica.innerHTML = ''; contadorInvitados = 0; agregarInvitado(); contenedorFormulario.style.display = 'block'; btnAgregarFamiliar.style.display = 'block'; };
         btnAgregarFamiliar.onclick = agregarInvitado;
 
-        // 2. Envío a Cloudflare D1 con Validaciones (CON FORMATO PARA CORREO)
+        // ENVÍO DE FORMULARIO RSVP
         document.getElementById('rsvpForm').onsubmit = function(e) {
             e.preventDefault();
             const btn = document.getElementById('btn-enviar-rsvp');
-            btn.innerText = "ENVIANDO...";
-            btn.disabled = true;
+            btn.innerText = "ENVIANDO..."; btn.disabled = true;
 
-            const bloques = document.querySelectorAll('.bloque-invitado');
             const listaParaEnviar = [];
+            const bloques = document.querySelectorAll('.bloque-invitado');
 
             for (let b of bloques) {
-                const nombre = b.querySelector('.nombre-buscar').value;
-                const rutRaw = b.querySelector('[name="rut"]').value;
-                const rutLimpio = limpiarRut(rutRaw);
-                
-                // Validar RUT 
-                if (!validarRutAlgoritmo(rutLimpio)) {
-                    alert(`El RUT ingresado para ${nombre} no es válido. Por favor, revisa el dígito verificador.`);
-                    btn.innerText = "Enviar Confirmación";
-                    btn.disabled = false;
-                    return; 
+                const rutRaw = b.querySelector('[name="rut"]').value, rutLimpio = limpiarRut(rutRaw);
+                if (!validarRutAlgoritmo(rutLimpio)) { 
+                    alert(`RUT inválido para ${b.querySelector('.nombre-buscar').value}.`); 
+                    btn.innerText = "Enviar Confirmación"; btn.disabled = false; return; 
                 }
-
-                // Validar Teléfono 
-                const telInput = b.querySelector('.tel-input');
-                let telDigitos = telInput.value.replace(/\D/g, '');
-                if (telDigitos.length < 8) {
-                    telInput.setCustomValidity("Número muy corto. Faltan dígitos.");
-                    telInput.reportValidity();
-                    btn.innerText = "Enviar Confirmación";
-                    btn.disabled = false;
-                    return; 
-                }
-
                 listaParaEnviar.push({
-                    nombre_invitado: nombre,
-                    rut: darFormatoRut(rutLimpio),
-                    email: b.querySelector('[name="email"]').value,
-                    telefono: telInput.value,
-                    dieta: b.querySelector('[name="dieta"]').value,
-                    lleva_pareja: b.querySelector('.check-pareja').checked,
+                    nombre_invitado: b.querySelector('.nombre-buscar').value,
+                    rut: darFormatoRut(rutLimpio), email: b.querySelector('[name="email"]').value,
+                    telefono: b.querySelector('.tel-input').value, dieta: b.querySelector('[name="dieta"]').value,
+                    lleva_pareja: b.querySelector('.check-pareja').checked, 
                     nombre_pareja: b.querySelector('.input-pareja') ? b.querySelector('.input-pareja').value : "-"
                 });
             }
 
-            // ENVIAMOS AL WORKER IDENTIFICANDO QUE ES "RSVP" Y LOS TXT
             fetch(SCRIPT_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -435,23 +340,15 @@
                 })
             })
             .then(res => res.json())
-            .then(data => {
-                alert("¡Muchas gracias! Asistencia confirmada.");
-                location.reload();
-            })
-            .catch(err => {
-                alert("Confirmado con éxito.");
-                location.reload();
-            });
+            .then(() => { alert("¡Muchas gracias! Asistencia confirmada."); location.reload(); })
+            .catch(() => { alert("Hubo un error, pero intentaremos procesarlo."); location.reload(); });
         };
 
-        // Otros Scripts (Contador e Historia)
-        fetch('historia.txt').then(r => r.text()).then(t => document.getElementById('historia-texto').innerText = t).catch(e => document.getElementById('historia-texto').innerText = "Nuestra historia está siendo escrita...");
-        
+        // OTROS SCRIPTS
+        fetch('historia.txt').then(r => r.text()).then(t => document.getElementById('historia-texto').innerText = t).catch(e => {});
         const fechaBoda = new Date("Oct 11, 2026 16:30:00").getTime();
         setInterval(() => {
-            const ahora = new Date().getTime();
-            const dist = fechaBoda - ahora;
+            const dist = fechaBoda - new Date().getTime();
             const d = Math.floor(dist / (1000 * 60 * 60 * 24)), h = Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)), m = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60)), s = Math.floor((dist % (1000 * 60)) / 1000);
             document.getElementById("contador").innerHTML = `<div><span class="fs-1 fw-bold">${d}</span><br><small>DÍAS</small></div><div><span class="fs-1 fw-bold">${h}</span><br><small>HRS</small></div><div><span class="fs-1 fw-bold">${m}</span><br><small>MIN</small></div><div><span class="fs-1 fw-bold">${s}</span><br><small>SEG</small></div>`;
         }, 1000);
