@@ -16,7 +16,6 @@
         .nav-link-custom:hover { color: var(--oro); }
         .btn-gold { background: var(--oro); color: var(--oscuro); font-weight: bold; border: none; padding: 10px 20px; text-transform: uppercase; letter-spacing: 1px; font-size: 0.65rem; text-decoration: none; display: inline-block; transition: 0.3s; text-align: center; cursor: pointer;}
         .btn-gold:hover { background: var(--oscuro); color: var(--oro); }
-        .btn-gold:disabled { background: #ccc; color: #666; cursor: not-allowed; }
         .btn-outline { background: transparent; border: 1px solid var(--oro); color: var(--oro); }
         .btn-outline:hover { background: var(--oro); color: white; }
         .box-datos { background: white; border: 1px solid rgba(181, 154, 122, 0.3); border-radius: 4px; }
@@ -41,8 +40,8 @@
                 </div>
 
                 <div id="seleccion-modo" class="d-flex flex-column flex-md-row justify-content-center gap-3 mb-4">
-                    <button id="btn-solo" class="btn-gold flex-grow-1">Cancelar solo a mí</button>
-                    <button id="btn-grupo" class="btn-gold btn-outline flex-grow-1">Cancelar a más personas</button>
+                    <button id="btn-solo" class="btn-gold flex-grow-1">Cancelar solo mi asistencia</button>
+                    <button id="btn-grupo" class="btn-gold btn-outline flex-grow-1">Cancelar grupo familiar</button>
                 </div>
 
                 <div id="contenedor-formulario" style="display: none;">
@@ -54,8 +53,7 @@
                             <i class="bi bi-plus me-1"></i> Ingresar otra persona a cancelar
                         </button>
 
-                        <div id="datosPre-rellenos" style="display:none;" class="mt-4 pt-4 border-top">
-                            <p class="text-muted small mb-3" style="font-size:0.7rem;">Tus datos de contacto (obtenidos de tu registro anterior):</p>
+                        <div id="datos-contacto-seccion" style="display:none;" class="mt-4 pt-4 border-top">
                             <div class="row g-3">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label small fw-bold">TU CORREO</label>
@@ -68,13 +66,12 @@
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label small fw-bold">MENSAJE PARA LOS NOVIOS</label>
+                                <label class="form-label small fw-bold">MENSAJE PARA LOS NOVIOS (Opcional)</label>
                                 <textarea class="form-control bg-transparent" id="mensajeCancelacion" rows="3" style="border:1px solid var(--oro);"></textarea>
                             </div>
                             
                             <button type="submit" id="btn-enviar-cancelacion" class="btn-gold w-100 border-0">Enviar Cancelación</button>
                         </div>
-                        
                     </form>
                 </div>
             </div>
@@ -85,14 +82,14 @@
 
     <script>
         const SCRIPT_URL = "https://rsvp-api.felipegiacoman.workers.dev";
-        let asuntoCancelacion = "Cancelación de asistencia procesada";
+        let asuntoCancelacion = "Cancelación de asistencia confirmada";
         let cuerpoCancelacion = "Hemos procesado tu cancelación. Sentimos mucho que no puedas asistir.";
 
-        // Cargar textos
-        fetch('asunto_cancelacion.txt').then(r => { if(r.ok) return r.text(); throw new Error(); }).then(t => asuntoCancelacion = t.trim()).catch(e => {});
-        fetch('cuerpo_cancelacion.txt').then(r => { if(r.ok) return r.text(); throw new Error(); }).then(t => cuerpoCancelacion = t.trim()).catch(e => {});
+        // Cargar textos de los TXT
+        fetch('asunto_cancelacion.txt').then(r => r.text()).then(t => asuntoCancelacion = t.trim()).catch(e => {});
+        fetch('cuerpo_cancelacion.txt').then(r => r.text()).then(t => cuerpoCancelacion = t.trim()).catch(e => {});
 
-        // Precargar nombres en el datalist (Dropdown nativo con filtro)
+        // Precargar nombres para el dropdown
         fetch(SCRIPT_URL).then(res => res.json()).then(data => {
             const datalist = document.getElementById('listaInvitadosBD');
             data.forEach(item => {
@@ -104,21 +101,21 @@
             });
         });
 
-        // 1. Lógica Dinámica de los recuadros
         let contadorCancelados = 0;
         const btnSolo = document.getElementById('btn-solo');
         const btnGrupo = document.getElementById('btn-grupo');
         const contenedorFormulario = document.getElementById('contenedor-formulario');
         const listaDinamica = document.getElementById('lista-cancelacion-dinamica');
         const btnAgregarFamiliar = document.getElementById('btn-agregar-familiar');
+        const contactoSeccion = document.getElementById('datos-contacto-seccion');
 
         function crearBloqueCancelacion(id) {
             return `
-            <div class="bloque-cancelado mb-4 pb-2" id="cancelado-${id}">
+            <div class="bloque-cancelado mb-4" id="cancelado-${id}">
                 ${id > 1 ? `<div class="d-flex justify-content-between mb-2"><h6 class="serif m-0" style="color:var(--oro);">Persona #${id}</h6><button type="button" class="btn-close" onclick="document.getElementById('cancelado-${id}').remove()"></button></div>` : ''}
                 <div class="mb-1">
-                    <label class="form-label small fw-bold" style="color:var(--oro);">BUSCA EL NOMBRE A CANCELAR (CLICK PARA VER LISTA)</label>
-                    <input type="text" class="form-control bg-transparent nombre-buscar" list="listaInvitadosBD" placeholder="Escribe para filtrar..." required style="border:1px solid var(--oro);">
+                    <label class="form-label small fw-bold" style="color:var(--oro);">NOMBRE</label>
+                    <input type="text" class="form-control bg-transparent nombre-buscar" list="listaInvitadosBD" placeholder="Escribe para buscar..." required style="border:1px solid var(--oro);">
                 </div>
             </div>`;
         }
@@ -128,10 +125,9 @@
             listaDinamica.insertAdjacentHTML('beforeend', crearBloqueCancelacion(contadorCancelados));
             const bloque = document.getElementById(`cancelado-${contadorCancelados}`);
 
-            // Detectar cuando seleccionen un nombre para autocompletar el correo
+            // Solo el primer nombre de la lista rellena los datos de contacto
             bloque.querySelector('.nombre-buscar').addEventListener('change', async function() {
                 const nombre = this.value;
-                // Solo si es válido y el correo aún no se ha rellenado
                 if (nombre.length > 3 && !document.getElementById('emailCancelacion').value) {
                     try {
                         const res = await fetch(SCRIPT_URL + "?nombre=" + encodeURIComponent(nombre));
@@ -139,18 +135,33 @@
                         if (data.email) {
                             document.getElementById('emailCancelacion').value = data.email;
                             document.getElementById('telefonoCancelacion').value = data.telefono;
-                            document.getElementById('datosPre-rellenos').style.display = 'block';
+                            contactoSeccion.style.display = 'block';
                         }
                     } catch (e) { console.error("Error buscando datos", e); }
                 }
             });
         }
 
-        btnSolo.onclick = () => { listaDinamica.innerHTML = ''; contadorCancelados = 0; agregarCancelado(); document.getElementById('datosPre-rellenos').style.display = 'none'; document.getElementById('emailCancelacion').value = ''; contenedorFormulario.style.display = 'block'; btnAgregarFamiliar.style.display = 'none'; };
-        btnGrupo.onclick = () => { listaDinamica.innerHTML = ''; contadorCancelados = 0; agregarCancelado(); document.getElementById('datosPre-rellenos').style.display = 'none'; document.getElementById('emailCancelacion').value = ''; contenedorFormulario.style.display = 'block'; btnAgregarFamiliar.style.display = 'block'; };
+        btnSolo.onclick = () => { 
+            listaDinamica.innerHTML = ''; contadorCancelados = 0; 
+            document.getElementById('emailCancelacion').value = '';
+            contactoSeccion.style.display = 'none';
+            agregarCancelado(); 
+            contenedorFormulario.style.display = 'block'; 
+            btnAgregarFamiliar.style.display = 'none'; 
+        };
+
+        btnGrupo.onclick = () => { 
+            listaDinamica.innerHTML = ''; contadorCancelados = 0; 
+            document.getElementById('emailCancelacion').value = '';
+            contactoSeccion.style.display = 'none';
+            agregarCancelado(); 
+            contenedorFormulario.style.display = 'block'; 
+            btnAgregarFamiliar.style.display = 'block'; 
+        };
+
         btnAgregarFamiliar.onclick = agregarCancelado;
 
-        // Envío del formulario
         document.getElementById('cancelacionForm').onsubmit = function(e) {
             e.preventDefault();
             const btn = document.getElementById('btn-enviar-cancelacion');
@@ -160,9 +171,8 @@
             const listaParaEnviar = [];
 
             for (let b of bloques) {
-                listaParaEnviar.push({
-                    nombre: b.querySelector('.nombre-buscar').value
-                });
+                const nombre = b.querySelector('.nombre-buscar').value;
+                if(nombre) listaParaEnviar.push({ nombre: nombre });
             }
 
             fetch(SCRIPT_URL, {
