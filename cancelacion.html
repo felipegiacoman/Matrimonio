@@ -20,6 +20,12 @@
         .btn-outline:hover { background: var(--oro); color: white; }
         .box-datos { background: white; border: 1px solid rgba(181, 154, 122, 0.3); border-radius: 4px; }
         .input-readonly { background-color: #f9f9f9 !important; border: 1px solid #ddd !important; color: #888; }
+        
+        /* ESTILOS PARA LA LISTA DESPLEGABLE PERSONALIZADA */
+        .sugerencias-container { position: absolute; z-index: 1050; background: white; width: 100%; max-height: 200px; overflow-y: auto; border: 1px solid var(--oro); border-top: none; border-radius: 0 0 4px 4px; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .sugerencia-item { cursor: pointer; padding: 10px 15px; border-bottom: 1px solid #f2ece4; font-size: 0.85rem; transition: background 0.2s;}
+        .sugerencia-item:last-child { border-bottom: none; }
+        .sugerencia-item:hover { background-color: var(--crema); color: var(--oro); font-weight: 500; }
     </style>
 </head>
 <body>
@@ -78,28 +84,24 @@
         </div>
     </section>
 
-    <datalist id="listaInvitadosBD"></datalist>
-
     <script>
         const SCRIPT_URL = "https://rsvp-api.felipegiacoman.workers.dev";
         let asuntoCancelacion = "Cancelación de asistencia confirmada";
         let cuerpoCancelacion = "Hemos procesado tu cancelación. Sentimos mucho que no puedas asistir.";
 
-        // Cargar textos de los TXT
+        // Cargar textos
         fetch('asunto_cancelacion.txt').then(r => r.text()).then(t => asuntoCancelacion = t.trim()).catch(e => {});
         fetch('cuerpo_cancelacion.txt').then(r => r.text()).then(t => cuerpoCancelacion = t.trim()).catch(e => {});
 
-        // Precargar nombres para el dropdown
-        fetch(SCRIPT_URL).then(res => res.json()).then(data => {
-            const datalist = document.getElementById('listaInvitadosBD');
-            data.forEach(item => {
-                if(item.nombre_invitado) {
-                    let opt = document.createElement('option');
-                    opt.value = item.nombre_invitado;
-                    datalist.appendChild(opt);
-                }
-            });
-        });
+        // --- PRECARGA GLOBAL DE NOMBRES ---
+        let listaNombresGlobal = [];
+        fetch(SCRIPT_URL)
+            .then(res => res.json())
+            .then(data => {
+                listaNombresGlobal = data.filter(item => item.nombre_invitado).map(item => item.nombre_invitado);
+            })
+            .catch(err => console.error("Error cargando nombres:", err));
+
 
         let contadorCancelados = 0;
         const btnSolo = document.getElementById('btn-solo');
@@ -113,9 +115,10 @@
             return `
             <div class="bloque-cancelado mb-4" id="cancelado-${id}">
                 ${id > 1 ? `<div class="d-flex justify-content-between mb-2"><h6 class="serif m-0" style="color:var(--oro);">Persona #${id}</h6><button type="button" class="btn-close" onclick="document.getElementById('cancelado-${id}').remove()"></button></div>` : ''}
-                <div class="mb-1">
+                <div class="mb-3 position-relative">
                     <label class="form-label small fw-bold" style="color:var(--oro);">NOMBRE</label>
-                    <input type="text" class="form-control bg-transparent nombre-buscar" list="listaInvitadosBD" placeholder="Escribe para buscar..." required style="border:1px solid var(--oro);">
+                    <input type="text" class="form-control bg-transparent nombre-buscar" name="nombre" autocomplete="off" placeholder="Escribe para buscar..." required style="border:1px solid var(--oro);">
+                    <div class="sugerencias-container"></div>
                 </div>
             </div>`;
         }
@@ -124,24 +127,71 @@
             contadorCancelados++;
             listaDinamica.insertAdjacentHTML('beforeend', crearBloqueCancelacion(contadorCancelados));
             const bloque = document.getElementById(`cancelado-${contadorCancelados}`);
+            
+            const inputNombre = bloque.querySelector('.nombre-buscar');
+            const sugerenciasBox = bloque.querySelector('.sugerencias-container');
 
-            // Solo el primer nombre de la lista rellena los datos de contacto
-            bloque.querySelector('.nombre-buscar').addEventListener('change', async function() {
-                const nombre = this.value;
-                if (nombre.length > 3 && !document.getElementById('emailCancelacion').value) {
-                    try {
-                        const res = await fetch(SCRIPT_URL + "?nombre=" + encodeURIComponent(nombre));
-                        const data = await res.json();
-                        if (data.email) {
-                            document.getElementById('emailCancelacion').value = data.email;
-                            document.getElementById('telefonoCancelacion').value = data.telefono;
-                            contactoSeccion.style.display = 'block';
-                        }
-                    } catch (e) { console.error("Error buscando datos", e); }
+            // --- LÓGICA DE LA LISTA DESPLEGABLE PERSONALIZADA ---
+            inputNombre.addEventListener('input', function() {
+                const val = this.value.toLowerCase();
+                sugerenciasBox.innerHTML = '';
+                
+                if (!val) {
+                    sugerenciasBox.style.display = 'none';
+                    return;
                 }
+                
+                // Filtrar coincidencias
+                const filtrados = listaNombresGlobal.filter(n => n.toLowerCase().includes(val));
+                
+                if (filtrados.length > 0) {
+                    filtrados.forEach(nombre => {
+                        const divItem = document.createElement('div');
+                        divItem.className = 'sugerencia-item';
+                        divItem.innerText = nombre;
+                        
+                        // Acción al hacer clic en un nombre de la lista
+                        divItem.onclick = async function() {
+                            inputNombre.value = nombre;
+                            sugerenciasBox.style.display = 'none';
+                            
+                            // Si es el primer correo y está vacío, llenamos los datos de contacto
+                            if (!document.getElementById('emailCancelacion').value) {
+                                try {
+                                    const res = await fetch(SCRIPT_URL + "?nombre=" + encodeURIComponent(nombre));
+                                    const data = await res.json();
+                                    if (data.email) {
+                                        document.getElementById('emailCancelacion').value = data.email;
+                                        document.getElementById('telefonoCancelacion').value = data.telefono;
+                                        contactoSeccion.style.display = 'block';
+                                    }
+                                } catch (e) { console.error("Error", e); }
+                            }
+                        };
+                        sugerenciasBox.appendChild(divItem);
+                    });
+                    sugerenciasBox.style.display = 'block';
+                } else {
+                    sugerenciasBox.style.display = 'none';
+                }
+            });
+
+            // Ocultar la lista si hacen clic en otra parte de la pantalla
+            document.addEventListener('click', function(e) {
+                if (e.target !== inputNombre && e.target !== sugerenciasBox) {
+                    sugerenciasBox.style.display = 'none';
+                }
+            });
+            
+            // Volver a mostrar si pinchan el campo de texto y ya hay letras
+            inputNombre.addEventListener('focus', function() {
+                 if(this.value.length > 0 && sugerenciasBox.innerHTML !== '') {
+                     sugerenciasBox.style.display = 'block';
+                 }
             });
         }
 
+        // Acciones de los botones iniciales
         btnSolo.onclick = () => { 
             listaDinamica.innerHTML = ''; contadorCancelados = 0; 
             document.getElementById('emailCancelacion').value = '';
@@ -162,6 +212,7 @@
 
         btnAgregarFamiliar.onclick = agregarCancelado;
 
+        // Envío final del formulario al Worker
         document.getElementById('cancelacionForm').onsubmit = function(e) {
             e.preventDefault();
             const btn = document.getElementById('btn-enviar-cancelacion');
