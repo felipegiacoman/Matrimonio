@@ -56,17 +56,20 @@
         .timeline-container::after { content: ''; position: absolute; bottom: 0; left: 50%; width: 5px; height: 5px; background-color: var(--oro); border-radius: 50%; transform: translateX(-50%); }
         .timeline-container-top-dot { position: absolute; top: 0; left: 50%; width: 5px; height: 5px; background-color: var(--oro); border-radius: 50%; transform: translateX(-50%); z-index: 2;}
 
-        /* AHORA SÍ: Centrado perfecto forzado para celular */
+        /* AJUSTES MOBILE: Más grandes y ocupando más ancho */
         @media (max-width: 768px) {
-            .timeline-container { padding: 10px 0; overflow-x: hidden; }
+            .timeline-container { padding: 10px 5px; overflow-x: hidden; }
             .timeline-container::before, .timeline-row::after, .timeline-container::after, .timeline-container-top-dot { left: 50% !important; transform: translateX(-50%) !important; }
-            .timeline-row { flex-direction: row !important; margin-bottom: 25px !important; align-items: center !important; }
+            .timeline-row { flex-direction: row !important; margin-bottom: 30px !important; align-items: center !important; }
             .timeline-left, .timeline-right { width: 50% !important; }
-            .timeline-left { padding-right: 15px !important; justify-content: flex-end !important; text-align: right !important; }
-            .timeline-right { padding-left: 15px !important; justify-content: flex-start !important; text-align: left !important; }
-            .timeline-icon { max-width: 45px !important; max-height: 45px !important; }
-            .timeline-text-box { font-size: 0.8rem !important; }
-            .border-dashed { min-width: 90px !important; padding-bottom: 4px !important; border-bottom: 1px dashed var(--oro) !important; border-left: none !important; }
+            /* Reducimos padding interno para que se expandan hacia afuera */
+            .timeline-left { padding-right: 8px !important; justify-content: flex-end !important; text-align: right !important; }
+            .timeline-right { padding-left: 8px !important; justify-content: flex-start !important; text-align: left !important; }
+            /* Iconos más grandes */
+            .timeline-icon { max-width: 55px !important; max-height: 55px !important; }
+            /* Texto más grande */
+            .timeline-text-box { font-size: 0.9rem !important; }
+            .border-dashed { min-width: 110px !important; padding-bottom: 4px !important; border-bottom: 1px dashed var(--oro) !important; border-left: none !important; }
         }
     </style>
 </head>
