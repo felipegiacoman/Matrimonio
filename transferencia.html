@@ -93,32 +93,34 @@
         let asuntoRegalo = "¡Gracias por tu regalo!";
         let cuerpoRegalo = "Hemos recibido tu confirmación de transferencia. ¡Mil gracias por acompañarnos en este proceso!";
 
-        // 1. CARGA DE DATOS BANCARIOS (CON AVISO DE ERROR VISIBLE)
+        // 1. CARGA DE DATOS BANCARIOS (Idéntica a index.html)
         fetch('datos_transferencia.txt')
-            .then(r => { 
-                if (!r.ok) throw new Error("Archivo no encontrado en el servidor"); 
-                return r.text(); 
+            .then(res => {
+                if (!res.ok) throw new Error("No se encontró el archivo");
+                return res.text();
             })
-            .then(t => document.getElementById('datos-transferencia').textContent = t.trim())
-            .catch(e => {
-                document.getElementById('datos-transferencia').textContent = "Error: No se pudo cargar datos_transferencia.txt. Por favor, asegúrate de acceder mediante el enlace web y no abriendo el archivo localmente.";
-                console.error(e);
+            .then(texto => {
+                document.getElementById('datos-transferencia').textContent = texto.trim();
+            })
+            .catch(err => {
+                document.getElementById('datos-transferencia').textContent = "Error al cargar los datos. Por favor recarga la página.";
+                console.error("Aviso:", err);
             });
 
         // 2. CARGA DE TEXTOS DE CORREO
-        fetch('asunto_regalo.txt').then(r => { if(r.ok) return r.text(); throw new Error(); }).then(t => asuntoRegalo = t.trim()).catch(e => console.warn("Usa asunto regalo por defecto"));
-        fetch('cuerpo_regalo.txt').then(r => { if(r.ok) return r.text(); throw new Error(); }).then(t => cuerpoRegalo = t.trim()).catch(e => console.warn("Usa cuerpo regalo por defecto"));
+        fetch('asunto_regalo.txt').then(r => { if(r.ok) return r.text(); throw new Error(); }).then(t => asuntoRegalo = t.trim()).catch(e => console.warn("Usando asunto por defecto"));
+        fetch('cuerpo_regalo.txt').then(r => { if(r.ok) return r.text(); throw new Error(); }).then(t => cuerpoRegalo = t.trim()).catch(e => console.warn("Usando cuerpo por defecto"));
 
-        // 3. ENVÍO SECUENCIAL DEL FORMULARIO
+        // 3. ENVÍO SECUENCIAL 
         document.getElementById('regaloForm').onsubmit = function(e) {
-            e.preventDefault(); // Freno de mano: Evita que salte a FormSubmit instantáneamente
+            e.preventDefault(); 
             
             const form = this;
             const btn = form.querySelector('button[type="submit"]');
             btn.innerText = "ENVIANDO CORREO...";
             btn.disabled = true;
 
-            // PASO A: Enviar la orden al Worker para mandar el correo al invitado
+            // Enviamos la petición al Worker
             fetch(SCRIPT_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -131,13 +133,11 @@
                 })
             })
             .then(() => {
-                // PASO B: Una vez que el Worker respondió OK, liberamos el freno y vamos a FormSubmit
                 btn.innerText = "PROCESANDO COMPROBANTE...";
                 form.submit(); 
             })
             .catch(err => {
-                console.error("Error al gatillar el correo de agradecimiento:", err);
-                // Si falla el Worker, igual mandamos el comprobante a FormSubmit para no perderlo
+                console.error("Error en el Worker:", err);
                 btn.innerText = "PROCESANDO COMPROBANTE...";
                 form.submit();
             });
