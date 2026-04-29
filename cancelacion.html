@@ -17,6 +17,8 @@
         .btn-gold { background: var(--oro); color: var(--oscuro); font-weight: bold; border: none; padding: 10px 20px; text-transform: uppercase; letter-spacing: 1px; font-size: 0.65rem; text-decoration: none; display: inline-block; transition: 0.3s; text-align: center; cursor: pointer;}
         .btn-gold:hover { background: var(--oscuro); color: var(--oro); }
         .btn-gold:disabled { background: #ccc; color: #666; cursor: not-allowed; }
+        .btn-outline { background: transparent; border: 1px solid var(--oro); color: var(--oro); }
+        .btn-outline:hover { background: var(--oro); color: white; }
         .box-datos { background: white; border: 1px solid rgba(181, 154, 122, 0.3); border-radius: 4px; }
         .input-readonly { background-color: #f9f9f9 !important; border: 1px solid #ddd !important; color: #888; }
     </style>
@@ -38,35 +40,48 @@
                     <p class="text-muted small">Sentimos mucho que no puedas acompañarnos.</p>
                 </div>
 
-                <form id="cancelacionForm" class="box-datos p-4 shadow-sm">
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold" style="color:var(--oro);">BUSCA TU NOMBRE (COMO TE REGISTRASTE)</label>
-                        <input type="text" class="form-control bg-transparent" list="listaInvitadosBD" id="nombreCancelacion" name="nombre" required style="border:1px solid var(--oro);">
-                        <datalist id="listaInvitadosBD"></datalist>
-                    </div>
-                    
-                    <div id="datosPre-rellenos" style="display:none;">
-                        <div class="mb-3">
-                            <label class="form-label small fw-bold">TU CORREO (Registrado)</label>
-                            <input type="email" class="form-control input-readonly" id="emailCancelacion" readonly>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label small fw-bold">TU TELÉFONO (Registrado)</label>
-                            <input type="tel" class="form-control input-readonly" id="telefonoCancelacion" readonly>
-                        </div>
-                    </div>
+                <div id="seleccion-modo" class="d-flex flex-column flex-md-row justify-content-center gap-3 mb-4">
+                    <button id="btn-solo" class="btn-gold flex-grow-1">Cancelar solo a mí</button>
+                    <button id="btn-grupo" class="btn-gold btn-outline flex-grow-1">Cancelar a más personas</button>
+                </div>
 
-                    <div class="mb-4">
-                        <label class="form-label small fw-bold">MENSAJE PARA LOS NOVIOS</label>
-                        <textarea class="form-control bg-transparent" id="mensajeCancelacion" rows="3" style="border:1px solid var(--oro);"></textarea>
-                    </div>
-                    
-                    <button type="submit" id="btn-enviar-cancelacion" class="btn-gold w-100 border-0" disabled>Enviar Cancelación</button>
-                    <p class="text-muted mt-3" style="font-size: 0.65rem; text-align: center;">Nota: Esta acción anulará tu asistencia y la de tu grupo familiar registrado bajo este correo.</p>
-                </form>
+                <div id="contenedor-formulario" style="display: none;">
+                    <form id="cancelacionForm" class="box-datos p-4 shadow-sm">
+                        
+                        <div id="lista-cancelacion-dinamica"></div>
+                        
+                        <button type="button" id="btn-agregar-familiar" class="btn-gold btn-outline w-100 mb-4 mt-2" style="display: none;">
+                            <i class="bi bi-plus me-1"></i> Ingresar otra persona a cancelar
+                        </button>
+
+                        <div id="datosPre-rellenos" style="display:none;" class="mt-4 pt-4 border-top">
+                            <p class="text-muted small mb-3" style="font-size:0.7rem;">Tus datos de contacto (obtenidos de tu registro anterior):</p>
+                            <div class="row g-3">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label small fw-bold">TU CORREO</label>
+                                    <input type="email" class="form-control input-readonly" id="emailCancelacion" readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label small fw-bold">TU TELÉFONO</label>
+                                    <input type="tel" class="form-control input-readonly" id="telefonoCancelacion" readonly>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label small fw-bold">MENSAJE PARA LOS NOVIOS</label>
+                                <textarea class="form-control bg-transparent" id="mensajeCancelacion" rows="3" style="border:1px solid var(--oro);"></textarea>
+                            </div>
+                            
+                            <button type="submit" id="btn-enviar-cancelacion" class="btn-gold w-100 border-0">Enviar Cancelación</button>
+                        </div>
+                        
+                    </form>
+                </div>
             </div>
         </div>
     </section>
+
+    <datalist id="listaInvitadosBD"></datalist>
 
     <script>
         const SCRIPT_URL = "https://rsvp-api.felipegiacoman.workers.dev";
@@ -77,7 +92,7 @@
         fetch('asunto_cancelacion.txt').then(r => { if(r.ok) return r.text(); throw new Error(); }).then(t => asuntoCancelacion = t.trim()).catch(e => {});
         fetch('cuerpo_cancelacion.txt').then(r => { if(r.ok) return r.text(); throw new Error(); }).then(t => cuerpoCancelacion = t.trim()).catch(e => {});
 
-        // Precargar nombres
+        // Precargar nombres en el datalist (Dropdown nativo con filtro)
         fetch(SCRIPT_URL).then(res => res.json()).then(data => {
             const datalist = document.getElementById('listaInvitadosBD');
             data.forEach(item => {
@@ -89,25 +104,51 @@
             });
         });
 
-        // Lógica de autocompletado
-        document.getElementById('nombreCancelacion').addEventListener('change', async function() {
-            const nombre = this.value;
-            if (nombre.length > 3) {
-                try {
-                    const res = await fetch(SCRIPT_URL + "?nombre=" + encodeURIComponent(nombre));
-                    const data = await res.json();
-                    if (data.email) {
-                        document.getElementById('emailCancelacion').value = data.email;
-                        document.getElementById('telefonoCancelacion').value = data.telefono;
-                        document.getElementById('datosPre-rellenos').style.display = 'block';
-                        document.getElementById('btn-enviar-cancelacion').disabled = false;
-                    } else {
-                        document.getElementById('datosPre-rellenos').style.display = 'none';
-                        document.getElementById('btn-enviar-cancelacion').disabled = true;
-                    }
-                } catch (e) { console.error("Error buscando datos", e); }
-            }
-        });
+        // 1. Lógica Dinámica de los recuadros
+        let contadorCancelados = 0;
+        const btnSolo = document.getElementById('btn-solo');
+        const btnGrupo = document.getElementById('btn-grupo');
+        const contenedorFormulario = document.getElementById('contenedor-formulario');
+        const listaDinamica = document.getElementById('lista-cancelacion-dinamica');
+        const btnAgregarFamiliar = document.getElementById('btn-agregar-familiar');
+
+        function crearBloqueCancelacion(id) {
+            return `
+            <div class="bloque-cancelado mb-4 pb-2" id="cancelado-${id}">
+                ${id > 1 ? `<div class="d-flex justify-content-between mb-2"><h6 class="serif m-0" style="color:var(--oro);">Persona #${id}</h6><button type="button" class="btn-close" onclick="document.getElementById('cancelado-${id}').remove()"></button></div>` : ''}
+                <div class="mb-1">
+                    <label class="form-label small fw-bold" style="color:var(--oro);">BUSCA EL NOMBRE A CANCELAR (CLICK PARA VER LISTA)</label>
+                    <input type="text" class="form-control bg-transparent nombre-buscar" list="listaInvitadosBD" placeholder="Escribe para filtrar..." required style="border:1px solid var(--oro);">
+                </div>
+            </div>`;
+        }
+
+        function agregarCancelado() {
+            contadorCancelados++;
+            listaDinamica.insertAdjacentHTML('beforeend', crearBloqueCancelacion(contadorCancelados));
+            const bloque = document.getElementById(`cancelado-${contadorCancelados}`);
+
+            // Detectar cuando seleccionen un nombre para autocompletar el correo
+            bloque.querySelector('.nombre-buscar').addEventListener('change', async function() {
+                const nombre = this.value;
+                // Solo si es válido y el correo aún no se ha rellenado
+                if (nombre.length > 3 && !document.getElementById('emailCancelacion').value) {
+                    try {
+                        const res = await fetch(SCRIPT_URL + "?nombre=" + encodeURIComponent(nombre));
+                        const data = await res.json();
+                        if (data.email) {
+                            document.getElementById('emailCancelacion').value = data.email;
+                            document.getElementById('telefonoCancelacion').value = data.telefono;
+                            document.getElementById('datosPre-rellenos').style.display = 'block';
+                        }
+                    } catch (e) { console.error("Error buscando datos", e); }
+                }
+            });
+        }
+
+        btnSolo.onclick = () => { listaDinamica.innerHTML = ''; contadorCancelados = 0; agregarCancelado(); document.getElementById('datosPre-rellenos').style.display = 'none'; document.getElementById('emailCancelacion').value = ''; contenedorFormulario.style.display = 'block'; btnAgregarFamiliar.style.display = 'none'; };
+        btnGrupo.onclick = () => { listaDinamica.innerHTML = ''; contadorCancelados = 0; agregarCancelado(); document.getElementById('datosPre-rellenos').style.display = 'none'; document.getElementById('emailCancelacion').value = ''; contenedorFormulario.style.display = 'block'; btnAgregarFamiliar.style.display = 'block'; };
+        btnAgregarFamiliar.onclick = agregarCancelado;
 
         // Envío del formulario
         document.getElementById('cancelacionForm').onsubmit = function(e) {
@@ -115,12 +156,23 @@
             const btn = document.getElementById('btn-enviar-cancelacion');
             btn.innerText = "PROCESANDO..."; btn.disabled = true;
 
+            const bloques = document.querySelectorAll('.bloque-cancelado');
+            const listaParaEnviar = [];
+
+            for (let b of bloques) {
+                listaParaEnviar.push({
+                    nombre: b.querySelector('.nombre-buscar').value
+                });
+            }
+
             fetch(SCRIPT_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     tipo: "cancelacion",
-                    nombre: document.getElementById('nombreCancelacion').value,
+                    invitados: listaParaEnviar,
+                    email: document.getElementById('emailCancelacion').value,
+                    telefono: document.getElementById('telefonoCancelacion').value,
                     mensaje: document.getElementById('mensajeCancelacion').value,
                     asunto: asuntoCancelacion,
                     cuerpo: cuerpoCancelacion
@@ -128,12 +180,12 @@
             })
             .then(async res => {
                 const data = await res.json();
-                if(data.error) throw new Error(data.error); // Forzamos mostrar el error del Worker
+                if(data.error) throw new Error(data.error); 
                 alert("Cancelación procesada con éxito.");
                 window.location.href = "index.html";
             })
             .catch(err => {
-                alert("Error de la base de datos: " + err.message);
+                alert("Error: " + err.message);
                 btn.innerText = "Enviar Cancelación"; btn.disabled = false;
             });
         };
