@@ -134,7 +134,7 @@
             <h2 class="serif mb-4">Regalos</h2>
             <div class="row g-4 justify-content-center">
                 <div class="col-md-5">
-                    <div class="p-4 border text-start">
+                    <div class="p-4 border">
                         <h5 class="serif">Transferencia - Luna de miel & primer hogar</h5>
                         <a href="transferencia.html" class="btn-gold mt-2">Transfiere aquí</a>
                     </div>
@@ -335,31 +335,4 @@
                     tipo: "rsvp",
                     invitados: listaParaEnviar,
                     asunto: asuntoRSVP,
-                    cuerpo: cuerpoRSVP
-                })
-            })
-            .then(res => res.json())
-            .then(() => { alert("¡Muchas gracias! Asistencia confirmada."); location.reload(); })
-            .catch(() => { alert("Hubo un error, pero intentaremos procesarlo."); location.reload(); });
-        };
-
-        // OTROS SCRIPTS
-        fetch('historia.txt').then(r => r.text()).then(t => document.getElementById('historia-texto').innerText = t).catch(e => {});
-        const fechaBoda = new Date("Oct 11, 2026 16:30:00").getTime();
-        setInterval(() => {
-            const dist = fechaBoda - new Date().getTime();
-            const d = Math.floor(dist / (1000 * 60 * 60 * 24)), h = Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)), m = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60)), s = Math.floor((dist % (1000 * 60)) / 1000);
-            document.getElementById("contador").innerHTML = `<div><span class="fs-1 fw-bold">${d}</span><br><small>DÍAS</small></div><div><span class="fs-1 fw-bold">${h}</span><br><small>HRS</small></div><div><span class="fs-1 fw-bold">${m}</span><br><small>MIN</small></div><div><span class="fs-1 fw-bold">${s}</span><br><small>SEG</small></div>`;
-        }, 1000);
-
-        let lastScroll = 0;
-        window.addEventListener("scroll", () => {
-            const currentScroll = window.pageYOffset;
-            const nav = document.getElementById("navbar");
-            if (currentScroll > lastScroll && currentScroll > 100) nav.classList.add("nav-hidden");
-            else nav.classList.remove("nav-hidden");
-            lastScroll = currentScroll;
-        });
-    </script>
-</body>
-</html>
+                    cuerpo: cuerpo
